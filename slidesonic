@@ -1,0 +1,365 @@
+#!/bin/bash
+# SlideSonic (2025) - Main Launcher Script
+# https://github.com/chama-x/SlideSonic-2025
+
+# Colors and styling
+RESET="\033[0m"
+BOLD="\033[1m"
+BLUE="\033[38;5;32m"
+GRAY="\033[38;5;242m"
+LIGHT_GRAY="\033[38;5;248m"
+GREEN="\033[38;5;35m"
+YELLOW="\033[38;5;220m"
+RED="\033[38;5;196m"
+CYAN="\033[38;5;87m"
+
+# Check if we're running in a terminal that supports colors
+USE_COLORS=true
+if [ -z "$TERM" ] || [ "$TERM" = "dumb" ]; then
+    USE_COLORS=false
+fi
+
+# Function to print styled text with fallback for non-color terminals
+print_styled() {
+    local style="$1"
+    local text="$2"
+    
+    if [ "$USE_COLORS" = true ]; then
+        echo -e "${style}${text}${RESET}"
+    else
+        echo "$text"
+    fi
+}
+
+# Display SlideSonic logo
+display_logo() {
+    if [ "$USE_COLORS" = true ]; then
+        print_styled "${BLUE}" "   _____ _ _     _      _____             _        _____ _____ _____ _____ "
+        print_styled "${BLUE}" "  / ____| (_)   | |    / ____|           (_)      / ____|  __ \\_   _|  __ \\"
+        print_styled "${BLUE}" " | (___ | |_  __| | ___| (___   ___  _ __ _  ___  | |    | |__) || | | |  | |"
+        print_styled "${BLUE}" "  \\___ \\| | |/ _\` |/ _ \\\\___ \\ / _ \\| '__| |/ __| | |    |  ___/ | | | |  | |"
+        print_styled "${BLUE}" "  ____) | | | (_| |  __/____) | (_) | |  | | (__  | |____| |    _| |_| |__| |"
+        print_styled "${BLUE}" " |_____/|_|_|\\__,_|\\___|_____/ \\___/|_|  |_|\\___|  \\_____|_|   |_____|_____/"
+        echo ""
+        print_styled "${CYAN}${BOLD}" "                      Create stunning slideshow videos"
+        echo ""
+        print_styled "${GRAY}" "Version 2.5.0 | https://github.com/chama-x/SlideSonic-2025"
+        echo ""
+    else
+        echo "SlideSonic (2025)"
+        echo "Create stunning slideshow videos"
+        echo "Version 2.5.0 | https://github.com/chama-x/SlideSonic-2025"
+        echo ""
+    fi
+}
+
+# Check if directories exist and create them if needed
+ensure_directories() {
+    mkdir -p images/original
+    mkdir -p song
+    mkdir -p temp
+    mkdir -p logs
+}
+
+# Check for images and audio
+check_media_files() {
+    # Check for images
+    local image_count=$(find images/original -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.bmp" \) 2>/dev/null | wc -l)
+    
+    # Check for audio
+    local audio_count=$(find song -type f \( -name "*.mp3" -o -name "*.wav" -o -name "*.m4a" -o -name "*.aac" -o -name "*.flac" -o -name "*.ogg" \) 2>/dev/null | wc -l)
+    
+    # Check subdirectories for batch mode
+    local subdir_count=0
+    if [ -d "images" ]; then
+        subdir_count=$(find images -maxdepth 1 -mindepth 1 -type d -not -path "*/\.*" -not -path "*/original" | wc -l)
+    fi
+    
+    echo "$image_count:$audio_count:$subdir_count"
+}
+
+# Handle file drops - detect when files are provided as arguments
+handle_file_args() {
+    local image_count=0
+    local audio_count=0
+    
+    for arg in "$@"; do
+        if [ -f "$arg" ]; then
+            local ext="${arg##*.}"
+            local ext_lower=$(echo "$ext" | tr '[:upper:]' '[:lower:]')
+            
+            # Image file
+            if [[ "$ext_lower" == "jpg" || "$ext_lower" == "jpeg" || "$ext_lower" == "png" || 
+                  "$ext_lower" == "gif" || "$ext_lower" == "bmp" ]]; then
+                mkdir -p images/original
+                cp "$arg" images/original/
+                image_count=$((image_count + 1))
+            
+            # Audio file
+            elif [[ "$ext_lower" == "mp3" || "$ext_lower" == "wav" || "$ext_lower" == "m4a" || 
+                    "$ext_lower" == "aac" || "$ext_lower" == "flac" || "$ext_lower" == "ogg" ]]; then
+                mkdir -p song
+                cp "$arg" song/
+                audio_count=$((audio_count + 1))
+            fi
+        elif [ -d "$arg" ]; then
+            # Directory of images - copy all image files
+            local dir_images=$(find "$arg" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" -o -name "*.bmp" \) 2>/dev/null)
+            if [ -n "$dir_images" ]; then
+                mkdir -p images/original
+                local count=0
+                for img in $dir_images; do
+                    cp "$img" images/original/
+                    count=$((count + 1))
+                done
+                image_count=$((image_count + count))
+            fi
+            
+            # Look for audio files in the directory
+            local dir_audio=$(find "$arg" -maxdepth 1 -type f \( -name "*.mp3" -o -name "*.wav" -o -name "*.m4a" -o -name "*.aac" -o -name "*.flac" -o -name "*.ogg" \) 2>/dev/null)
+            if [ -n "$dir_audio" ]; then
+                mkdir -p song
+                local count=0
+                for aud in $dir_audio; do
+                    cp "$aud" song/
+                    count=$((count + 1))
+                done
+                audio_count=$((audio_count + count))
+            fi
+        fi
+    done
+    
+    # Return the counts
+    echo "$image_count:$audio_count"
+}
+
+# Display help
+display_help() {
+    print_styled "${BOLD}" "SlideSonic (2025) - Usage Help"
+    echo ""
+    print_styled "${BOLD}${BLUE}" "Basic Usage:"
+    print_styled "${GRAY}" "  ./slidesonic             Start SlideSonic application"
+    echo ""
+    print_styled "${BOLD}${BLUE}" "Command Line Options:"
+    print_styled "${GRAY}" "  ./slidesonic --quick     Create slideshow with automatic settings"
+    print_styled "${GRAY}" "  ./slidesonic --help      Show this help message"
+    print_styled "${GRAY}" "  ./slidesonic --version   Show version information"
+    print_styled "${GRAY}" "  ./slidesonic --analyze   Run hardware analysis"
+    print_styled "${GRAY}" "  ./slidesonic --monitor   Monitor encoding progress"
+    print_styled "${GRAY}" "  ./slidesonic --batch     Run batch processing on subdirectories"
+    echo ""
+    print_styled "${BOLD}${BLUE}" "Accessibility Options:"
+    print_styled "${GRAY}" "  ./slidesonic --no-colors      Disable colored output"
+    print_styled "${GRAY}" "  ./slidesonic --no-unicode     Use ASCII characters instead of Unicode"
+    print_styled "${GRAY}" "  ./slidesonic --no-animations  Disable animations"
+    print_styled "${GRAY}" "  ./slidesonic --accessibility  Enable all accessibility features"
+    echo ""
+    print_styled "${BOLD}${BLUE}" "Working with Files:"
+    print_styled "${GRAY}" "  ./slidesonic [files...]  Process specified image and audio files"
+    print_styled "${GRAY}" "  ./slidesonic [directory] Process all media files in specified directory"
+    echo ""
+}
+
+# Display version
+display_version() {
+    print_styled "${BOLD}${BLUE}" "SlideSonic (2025) - Version 2.5.0"
+    print_styled "${GRAY}" "© 2023-2025 SlideSonic Contributors"
+    echo ""
+}
+
+# Check dependencies and run setup if needed
+check_dependencies() {
+    # Check Python
+    if ! command -v python3 &> /dev/null; then
+        print_styled "${RED}" "✗ Python 3 not found. Please install Python 3.8 or later."
+        exit 1
+    fi
+    
+    # Check FFmpeg
+    if ! command -v ffmpeg &> /dev/null; then
+        print_styled "${YELLOW}" "⚠️ FFmpeg not found. Setting up environment..."
+        if [ -f "scripts/setup_advanced_encoding.sh" ]; then
+            bash scripts/setup_advanced_encoding.sh
+            if [ $? -ne 0 ]; then
+                print_styled "${RED}" "✗ Setup failed. Please run scripts/setup_advanced_encoding.sh manually."
+                exit 1
+            fi
+        else
+            print_styled "${RED}" "✗ Setup script not found. Please install FFmpeg manually."
+            exit 1
+        fi
+    fi
+    
+    # Check virtual environment
+    if [ ! -d "venv" ]; then
+        print_styled "${YELLOW}" "⚠️ Python virtual environment not found. Setting up environment..."
+        if [ -f "scripts/setup_advanced_encoding.sh" ]; then
+            bash scripts/setup_advanced_encoding.sh
+            if [ $? -ne 0 ]; then
+                print_styled "${RED}" "✗ Setup failed. Please run scripts/setup_advanced_encoding.sh manually."
+                exit 1
+            fi
+        else
+            print_styled "${RED}" "✗ Setup script not found. Please run setup manually."
+            exit 1
+        fi
+    else
+        # If venv exists but requirements might not be installed
+        if [ ! -f "venv/lib/python3.10/site-packages/psutil/__init__.py" ] && [ ! -f "venv/lib/python3.9/site-packages/psutil/__init__.py" ] && [ ! -f "venv/lib/python3.8/site-packages/psutil/__init__.py" ]; then
+            print_styled "${YELLOW}" "⚠️ Python dependencies may be missing. Setting up environment..."
+            if [ -f "scripts/setup_advanced_encoding.sh" ]; then
+                bash scripts/setup_advanced_encoding.sh
+                if [ $? -ne 0 ]; then
+                    print_styled "${RED}" "✗ Setup failed. Please run scripts/setup_advanced_encoding.sh manually."
+                    exit 1
+                fi
+            fi
+        fi
+    fi
+}
+
+# Main function
+main() {
+    # Ensure necessary directories exist
+    ensure_directories
+    
+    # Check if files were provided as arguments
+    if [ $# -gt 0 ]; then
+        # Check for help flag
+        if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+            display_logo
+            display_help
+            exit 0
+        fi
+        
+        # Check for version flag
+        if [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
+            display_version
+            exit 0
+        fi
+        
+        # Check for quick mode
+        if [ "$1" = "--quick" ]; then
+            check_dependencies
+            # Activate Python virtual environment if it exists
+            if [ -d "venv" ]; then
+                source venv/bin/activate
+            fi
+            python3 src/advanced_app.py --quick
+            exit $?
+        fi
+        
+        # Check for hardware analysis
+        if [ "$1" = "--analyze" ]; then
+            check_dependencies
+            # Activate Python virtual environment if it exists
+            if [ -d "venv" ]; then
+                source venv/bin/activate
+            fi
+            python3 src/hardware_analysis.py
+            exit $?
+        fi
+        
+        # Check for monitor mode
+        if [ "$1" = "--monitor" ]; then
+            check_dependencies
+            # Activate Python virtual environment if it exists
+            if [ -d "venv" ]; then
+                source venv/bin/activate
+            fi
+            python3 src/monitor_encoding.py
+            exit $?
+        fi
+        
+        # Check for batch mode
+        if [ "$1" = "--batch" ]; then
+            check_dependencies
+            # Activate Python virtual environment if it exists
+            if [ -d "venv" ]; then
+                source venv/bin/activate
+            fi
+            python3 src/advanced_app.py --batch
+            exit $?
+        fi
+        
+        # Check for accessibility options
+        ACCESSIBILITY_ARGS=""
+        for arg in "$@"; do
+            if [ "$arg" = "--no-colors" ] || [ "$arg" = "--no-unicode" ] || [ "$arg" = "--no-animations" ]; then
+                ACCESSIBILITY_ARGS="$ACCESSIBILITY_ARGS $arg"
+            elif [ "$arg" = "--accessibility" ]; then
+                ACCESSIBILITY_ARGS="$ACCESSIBILITY_ARGS --no-colors --no-unicode --no-animations"
+            fi
+        done
+        
+        # Special cases handled, now check for file arguments
+        # Only process if no special flags were found
+        if [ -z "$ACCESSIBILITY_ARGS" ] || [[ "$*" == *".jpg"* || "$*" == *".mp3"* || -d "$1" ]]; then
+            file_counts=$(handle_file_args "$@")
+            IFS=':' read -r image_count audio_count <<< "$file_counts"
+            
+            if [ $image_count -gt 0 ] || [ $audio_count -gt 0 ]; then
+                print_styled "${GREEN}" "✓ Imported $image_count image files and $audio_count audio files"
+                
+                # Ask if user wants to create a slideshow with these files
+                print_styled "${GRAY}" "Would you like to create a slideshow with these files? (y/n)"
+                read -p "$(print_styled "${BLUE}" "▶ ")" CREATE_SLIDESHOW
+                
+                if [[ $CREATE_SLIDESHOW == "y" || $CREATE_SLIDESHOW == "Y" ]]; then
+                    check_dependencies
+                    # Activate Python virtual environment if it exists
+                    if [ -d "venv" ]; then
+                        source venv/bin/activate
+                    fi
+                    if [ $image_count -eq 0 ]; then
+                        print_styled "${YELLOW}" "⚠️ No image files were imported. Please add images before creating a slideshow."
+                    else
+                        python3 src/advanced_app.py --quick
+                    fi
+                fi
+                
+                exit 0
+            fi
+        fi
+    fi
+    
+    # Default flow - start the application
+    check_dependencies
+    
+    # Check media files
+    media_counts=$(check_media_files)
+    IFS=':' read -r image_count audio_count subdir_count <<< "$media_counts"
+    
+    # Activate Python virtual environment if it exists
+    if [ -d "venv" ]; then
+        source venv/bin/activate
+    fi
+    
+    # Show startup banner with media summary
+    clear
+    display_logo
+    
+    if [ $image_count -gt 0 ]; then
+        print_styled "${GREEN}" "✓ Found $image_count images in images/original/ directory"
+    else
+        print_styled "${YELLOW}" "⚠️ No images found in images/original/ directory"
+    fi
+    
+    if [ $audio_count -gt 0 ]; then
+        print_styled "${GREEN}" "✓ Found $audio_count audio files in song/ directory"
+    else
+        print_styled "${YELLOW}" "⚠️ No audio files found in song/ directory"
+    fi
+    
+    if [ $subdir_count -gt 0 ]; then
+        print_styled "${CYAN}" "ℹ️ Found $subdir_count subdirectories in images/ (available for batch processing)"
+    fi
+    
+    echo ""
+    
+    # Run the application with any accessibility options
+    python3 src/advanced_app.py $ACCESSIBILITY_ARGS
+}
+
+# Run the main function
+main "$@" 
