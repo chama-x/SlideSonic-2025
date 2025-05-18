@@ -193,6 +193,8 @@ def parse_args():
     parser.add_argument('--no-animations', action='store_true', help='Disable animations')
     parser.add_argument('--hardware-analysis', action='store_true', help='Run hardware analysis only')
     parser.add_argument('--version', action='store_true', help='Show version information')
+    parser.add_argument('--quick', action='store_true', help='Launch quick slideshow creation')
+    parser.add_argument('--batch', action='store_true', help='Run batch processing on subdirectories')
     return parser.parse_args()
 
 def get_hardware_info():
