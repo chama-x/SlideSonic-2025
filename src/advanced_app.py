@@ -1874,6 +1874,264 @@ def view_media_info():
     
     input("\nPress Enter to return to the menu...")
 
+def get_audio_duration(audio_path):
+    """Get the duration of an audio file using FFmpeg"""
+    try:
+        process = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 
+                               'default=noprint_wrappers=1:nokey=1', audio_path], 
+                               capture_output=True, text=True, check=True)
+        duration = float(process.stdout.strip())
+        return duration
+    except (subprocess.SubprocessError, ValueError):
+        return None
+
+def find_matching_audio(images_data, audio_data):
+    """Find the best matching audio file for the given images"""
+    if not audio_data or audio_data["count"] == 0:
+        return None
+    
+    # Get all audio files
+    audio_files = [f["path"] for f in audio_data["files"] if f["type"] == "audio"]
+    if not audio_files:
+        return None
+    
+    # If we only have one audio file, return it
+    if len(audio_files) == 1:
+        return audio_files[0]
+    
+    # If we have date-based image groups, try to match audio files by date
+    if images_data["groups"]["date"]:
+        # Get the most common date
+        most_common_date = max(images_data["groups"]["date"].values(), key=len)[0]["date"]
+        
+        # Try to find audio files with matching date in filename
+        for audio_file in audio_files:
+            audio_name = os.path.basename(audio_file)
+            if most_common_date in audio_name:
+                return audio_file
+    
+    # If we have a prefix group, try to match by prefix
+    if images_data["groups"]["prefix"]:
+        largest_prefix_group = max(images_data["groups"]["prefix"].items(), key=lambda x: len(x[1]))
+        prefix = largest_prefix_group[0]
+        
+        # Try to find audio files with similar prefix
+        for audio_file in audio_files:
+            audio_name = os.path.basename(audio_file)
+            if prefix in audio_name:
+                return audio_file
+    
+    # Default to the first audio file
+    return audio_files[0]
+
+def smart_scan_directory(directory, extensions):
+    """Scan a directory for files and organize them into groups"""
+    result = {
+        "count": 0,
+        "files": [],
+        "groups": {
+            "date": {},
+            "prefix": {},
+            "sequence": {},
+            "extension": {}
+        }
+    }
+    
+    # Check if directory exists
+    if not os.path.exists(directory):
+        return result
+    
+    # Scan for files with the requested extensions
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        
+        # Skip directories and hidden files
+        if os.path.isdir(file_path) or filename.startswith('.'):
+            continue
+        
+        # Check file extension
+        ext = os.path.splitext(filename)[1].lower()
+        if ext not in extensions:
+            continue
+        
+        # Determine file type
+        file_type = None
+        if ext in IMAGE_EXTENSIONS:
+            file_type = "image"
+        elif ext in AUDIO_EXTENSIONS:
+            file_type = "audio"
+        elif ext in VIDEO_EXTENSIONS:
+            file_type = "video"
+        
+        # Add file to the result
+        file_info = {
+            "name": filename,
+            "path": file_path,
+            "ext": ext,
+            "type": file_type
+        }
+        
+        result["files"].append(file_info)
+        result["count"] += 1
+        
+        # Add to extension group
+        if ext not in result["groups"]["extension"]:
+            result["groups"]["extension"][ext] = []
+        result["groups"]["extension"][ext].append(file_info)
+        
+        # Skip the rest for non-image files
+        if file_type != "image":
+            continue
+        
+        # Extract date from filename
+        date_found = False
+        for pattern in DATE_PATTERNS:
+            match = re.search(pattern, filename)
+            if match:
+                date_str = match.group(1)
+                if date_str not in result["groups"]["date"]:
+                    result["groups"]["date"][date_str] = []
+                
+                file_info["date"] = date_str
+                result["groups"]["date"][date_str].append(file_info)
+                date_found = True
+                break
+        
+        # Extract sequence number
+        sequence_found = False
+        for pattern in SEQUENCE_PATTERNS:
+            match = re.search(pattern, filename)
+            if match:
+                seq_num = match.group(1)
+                
+                # Find common prefix (part before the sequence number)
+                prefix_parts = filename.split(seq_num, 1)
+                if len(prefix_parts) == 2:
+                    prefix = prefix_parts[0]
+                    
+                    # Add to sequence group
+                    if prefix not in result["groups"]["sequence"]:
+                        result["groups"]["sequence"][prefix] = []
+                    
+                    file_info["sequence"] = {
+                        "prefix": prefix,
+                        "number": int(seq_num)
+                    }
+                    
+                    result["groups"]["sequence"][prefix].append(file_info)
+                    sequence_found = True
+                    break
+        
+        # Extract prefix (first part of the filename)
+        if not sequence_found:
+            # Use first word/segment as prefix
+            name_parts = re.split(r'[-_\s]', os.path.splitext(filename)[0], 1)
+            if len(name_parts) > 1:
+                prefix = name_parts[0]
+                
+                if prefix not in result["groups"]["prefix"]:
+                    result["groups"]["prefix"][prefix] = []
+                
+                file_info["prefix"] = prefix
+                result["groups"]["prefix"][prefix].append(file_info)
+    
+    return result
+
+def auto_organize_images(recursive=False):
+    """Automatically analyze and organize images and audio files"""
+    result = {
+        "images": {
+            "count": 0,
+            "files": [],
+            "groups": {
+                "date": {},
+                "prefix": {},
+                "sequence": {}
+            },
+            "suggested_order": []
+        },
+        "audio": {
+            "files": {
+                "count": 0,
+                "files": []
+            },
+            "selected": None,
+            "duration": None
+        },
+        "slide_duration": 3.0  # Default slide duration
+    }
+    
+    # Scan images directory
+    images_data = smart_scan_directory("images/original", IMAGE_EXTENSIONS)
+    
+    # Update result with image data
+    result["images"]["count"] = images_data["count"]
+    result["images"]["files"] = images_data["files"]
+    result["images"]["groups"] = images_data["groups"]
+    
+    # Determine optimal order for images
+    if images_data["count"] > 0:
+        # First try to use sequence data
+        has_sequence = False
+        for prefix, files in images_data["groups"]["sequence"].items():
+            if len(files) > 1:
+                # Sort by sequence number
+                sorted_files = sorted(files, key=lambda x: x["sequence"]["number"])
+                result["images"]["suggested_order"] = [file_info["path"] for file_info in sorted_files]
+                has_sequence = True
+                break
+        
+        # If no sequence found, try to use date
+        if not has_sequence and images_data["groups"]["date"]:
+            # Find the largest date group
+            largest_date_group = max(images_data["groups"]["date"].values(), key=len)
+            if len(largest_date_group) > 1:
+                # Sort by name within the same date
+                sorted_files = sorted(largest_date_group, key=lambda x: x["name"])
+                result["images"]["suggested_order"] = [file_info["path"] for file_info in sorted_files]
+                
+                # Add remaining files
+                remaining = [f for f in images_data["files"] if f["path"] not in result["images"]["suggested_order"]]
+                remaining_sorted = sorted(remaining, key=lambda x: x["name"])
+                result["images"]["suggested_order"].extend([file_info["path"] for file_info in remaining_sorted])
+            else:
+                # Sort all files by name
+                sorted_files = sorted(images_data["files"], key=lambda x: x["name"])
+                result["images"]["suggested_order"] = [file_info["path"] for file_info in sorted_files]
+        else:
+            # Sort all files by name
+            sorted_files = sorted(images_data["files"], key=lambda x: x["name"])
+            result["images"]["suggested_order"] = [file_info["path"] for file_info in sorted_files]
+    
+    # Scan audio directory
+    audio_data = smart_scan_directory("song", AUDIO_EXTENSIONS)
+    
+    # Update result with audio data
+    result["audio"]["files"]["count"] = audio_data["count"]
+    result["audio"]["files"]["files"] = audio_data["files"]
+    
+    # Find matching audio file
+    best_audio = find_matching_audio(images_data, audio_data)
+    if best_audio:
+        result["audio"]["selected"] = best_audio
+        
+        # Get audio duration
+        audio_duration = get_audio_duration(best_audio)
+        if audio_duration:
+            result["audio"]["duration"] = audio_duration
+            
+            # Calculate optimal slide duration based on audio length
+            if images_data["count"] > 0:
+                raw_duration = audio_duration / images_data["count"]
+                if raw_duration < 2.0:
+                    result["slide_duration"] = 2.0
+                elif raw_duration > 6.0:
+                    result["slide_duration"] = 6.0
+                else:
+                    result["slide_duration"] = raw_duration
+    
+    return result
+
 def main():
     """Main function"""
     global USE_COLORS, USE_UNICODE, USE_ANIMATIONS
