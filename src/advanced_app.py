@@ -2155,6 +2155,16 @@ def main():
     if args.hardware_analysis:
         run_hardware_analysis()
         return
+        
+    # Run quick slideshow creation if requested
+    if args.quick:
+        quick_create_slideshow()
+        return
+        
+    # Run batch processing if requested
+    if args.batch:
+        batch_process_slideshows()
+        return
     
     # Show main menu
     show_main_menu()
