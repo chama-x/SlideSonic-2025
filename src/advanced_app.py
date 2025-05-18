@@ -762,8 +762,8 @@ IMAGE_DIR = "images/original"
                 
         script_content += f"""
 # Using smart-sorted image list
-image_files = {json.dumps(relative_paths, indent=4)}
-print(f"Using {len(image_files)} images in optimized order")
+image_files = {json.dumps(relative_paths)}
+print(f"Using {{len(image_files)}} images in optimized order")
 """
     else:
         script_content += """
