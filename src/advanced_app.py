@@ -29,14 +29,18 @@ PROGRAM_NAME = "SlideSonic (2025)"
 # Terminal colors
 RESET = "\033[0m"
 BOLD = "\033[1m"
-BLUE = "\033[38;5;32m"
-GRAY = "\033[38;5;242m"
-LIGHT_GRAY = "\033[38;5;248m"
-GREEN = "\033[38;5;35m"
-YELLOW = "\033[38;5;220m"
-RED = "\033[38;5;196m"
-CYAN = "\033[38;5;87m"
-PURPLE = "\033[38;5;141m"
+BLUE = "\033[38;5;32m"      # Apple blue
+GRAY = "\033[38;5;242m"     # Dark gray
+LIGHT_GRAY = "\033[38;5;248m" # Light gray
+GREEN = "\033[38;5;35m"     # Success green
+YELLOW = "\033[38;5;220m"   # Warning yellow
+RED = "\033[38;5;196m"      # Error red
+CYAN = "\033[38;5;87m"      # Info cyan
+PURPLE = "\033[38;5;141m"   # Process purple
+
+# Background colors
+BG_BLUE = "\033[48;5;24m"   # Blue background
+BG_DARK = "\033[48;5;235m"  # Dark background
 
 # Accessibility options
 USE_COLORS = True
@@ -104,26 +108,58 @@ def center_text(text, style=BLUE):
         print(f"{' ' * padding}{text}")
 
 def show_logo():
-    """Display the SlideSonic logo"""
+    """Display the SlideSonic logo with modern clean aesthetics"""
     if USE_COLORS and USE_UNICODE:
-        print(f"{BLUE}")
-        print("   _____ _ _     _      _____             _        _____ _____ _____ _____ ")
-        print("  / ____| (_)   | |    / ____|           (_)      / ____|  __ \\_   _|  __ \\")
-        print(" | (___ | |_  __| | ___| (___   ___  _ __ _  ___  | |    | |__) || | | |  | |")
-        print("  \\___ \\| | |/ _` |/ _ \\\\___ \\ / _ \\| '__| |/ __| | |    |  ___/ | | | |  | |")
-        print("  ____) | | | (_| |  __/____) | (_) | |  | | (__  | |____| |    _| |_| |__| |")
-        print(" |_____/|_|_|\\__,_|\\___|_____/ \\___/|_|  |_|\\___|  \\_____|_|   |_____|_____/")
-        print(f"{RESET}")
+        # Use a cleaner, more modern logo style
+        print(f"{BLUE}{BOLD}SlideSonic{RESET}")
     else:
         center_text(f"{PROGRAM_NAME}")
 
 def show_banner():
-    """Display the application banner"""
+    """Display the application banner with modern clean aesthetics"""
     os.system('cls' if os.name == 'nt' else 'clear')
-    show_logo()
-    center_text("Create stunning slideshow videos", CYAN)
-    print_styled(GRAY, f"Version {VERSION} | https://github.com/chama-x/SlideSonic-2025")
-    draw_divider()
+    
+    # Get terminal width
+    width = shutil.get_terminal_size().columns
+    
+    # Create styled header bar
+    if USE_COLORS:
+        print(f"{BG_BLUE}{' ' * width}{RESET}")
+    
+    # Display clean, modern logo
+    width = shutil.get_terminal_size().columns
+    title = f"{BLUE}{BOLD}SlideSonic{RESET}"
+    padding = (width - len(title.replace(BLUE, "").replace(BOLD, "").replace(RESET, ""))) // 2
+    print(f"{' ' * padding}{title}")
+    
+    # Add subtitle with elegant typography
+    if USE_COLORS:
+        padding = (width - 32) // 2  # "Create stunning slideshow videos" is 32 chars
+        print(f"{' ' * padding}{BOLD}{CYAN}Create stunning slideshow videos{RESET}")
+        
+        # Add version and branding
+        version_text = f"Version {VERSION} | Chamath Thiwanka (CHX)"
+        version_padding = (width - len(version_text)) // 2
+        print(f"{' ' * version_padding}{GRAY}{version_text}{RESET}")
+        
+        # Add github link
+        github_text = f"https://github.com/chama-x/SlideSonic-2025"
+        github_padding = (width - len(github_text)) // 2
+        print(f"{' ' * github_padding}{LIGHT_GRAY}{github_text}{RESET}")
+        
+        # Add elegant separator
+        if USE_UNICODE:
+            separator = "───────────────────────────────────────────"
+            separator = separator.center(width)
+            print(f"{GRAY}{separator}{RESET}")
+        else:
+            print(f"{GRAY}{'-' * width}{RESET}")
+    else:
+        center_text("Create stunning slideshow videos")
+        center_text(f"Version {VERSION} | Chamath Thiwanka (CHX)")
+        center_text("https://github.com/chama-x/SlideSonic-2025")
+        print("-" * width)
+    
     print()
 
 def ask_question(prompt, default=None, options=None, password=False):
@@ -241,97 +277,363 @@ def format_bytes(bytes_value):
         bytes_value /= 1024
 
 def run_hardware_analysis():
-    """Run a basic hardware analysis"""
+    """Analyze hardware capabilities with Apple-inspired design aesthetics"""
     show_banner()
-    print_styled(BOLD, "Running hardware analysis...")
     
-    # Show a spinner animation
-    show_spinner("Analyzing system", 2)
+    # Get terminal width for centered content
+    width = shutil.get_terminal_size().columns
+    menu_width = min(80, width - 10)
+    
+    # Display section header
+    if USE_COLORS:
+        section_title = " Hardware Analysis "
+        padding = (menu_width - len(section_title)) // 2
+        if USE_UNICODE:
+            print(f"{' ' * padding}{BOLD}{BLUE}•{section_title}•{RESET}")
+            print(f"{GRAY}{'─' * menu_width}{RESET}")
+        else:
+            print(f"{' ' * padding}{BOLD}{BLUE}{section_title}{RESET}")
+            print(f"{GRAY}{'-' * menu_width}{RESET}")
+    else:
+        print("Hardware Analysis")
+        print("-" * menu_width)
+    
+    print()
+    
+    # Show animation while analyzing
+    if USE_COLORS:
+        print(f"{BOLD}Analyzing system capabilities...{RESET}")
+    else:
+        print("Analyzing system capabilities...")
+    
+    show_spinner("Gathering system information", 2)
     
     # Get hardware info
     hw_info = get_hardware_info()
     
-    # Display results
-    draw_divider()
-    print_styled(BOLD, "Hardware Analysis Results")
-    print()
-    
-    # System information
-    print_styled(BOLD + BLUE, "System Information:")
-    print_styled(CYAN, f"• OS:           {hw_info['os']} {hw_info['os_version']}")
-    print_styled(CYAN, f"• Architecture: {hw_info['architecture']}")
-    print_styled(CYAN, f"• Python:       {hw_info['python_version']}")
-    if hw_info["apple_silicon"]:
-        print_styled(GREEN, f"• Apple Silicon: Yes (M-series chip)")
-    print()
-    
-    # CPU information
-    print_styled(BOLD + BLUE, "CPU Information:")
-    print_styled(CYAN, f"• CPU Cores:    {hw_info['cpu_cores']}")
-    print()
-    
-    # Memory information
-    print_styled(BOLD + BLUE, "Memory Information:")
-    if hw_info["memory_total"] is not None:
-        print_styled(CYAN, f"• Total:        {format_bytes(hw_info['memory_total'])}")
-        print_styled(CYAN, f"• Available:    {format_bytes(hw_info['memory_available'])}")
-    else:
-        print_styled(YELLOW, "• Memory information not available")
-    print()
-    
-    # FFmpeg information
-    print_styled(BOLD + BLUE, "FFmpeg Information:")
-    if hw_info["ffmpeg_version"] is not None:
-        print_styled(GREEN, f"• Installed:    Yes (version {hw_info['ffmpeg_version']})")
+    # Output in a nice box
+    if USE_COLORS:
+        # Box style
+        status_box_top = f"{LIGHT_GRAY}┌{'─' * (menu_width - 2)}┐{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        status_box_bottom = f"{LIGHT_GRAY}└{'─' * (menu_width - 2)}┘{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        status_side = f"{LIGHT_GRAY}│{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}|{RESET}"
+        divider = f"{LIGHT_GRAY}├{'─' * (menu_width - 2)}┤{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
         
-        # Get encoder information
-        try:
-            process = subprocess.run(['ffmpeg', '-encoders'], capture_output=True, text=True, check=True)
-            encoders_output = process.stdout
+        print("\n" + status_box_top)
+        print(f"{status_side} {BOLD}System Information{RESET}{' ' * (menu_width - 20)}{status_side}")
+        print(divider)
+        
+        # Create nice rows
+        def info_row(label, value, color=CYAN):
+            label_display = f"{BOLD}{label}:{RESET}"
+            value_display = f"{color}{value}{RESET}"
+            padding = menu_width - len(label) - len(value) - 5
+            return f"{status_side} {label_display} {value_display}{' ' * padding} {status_side}"
+        
+        # System info
+        print(info_row("Operating System", f"{hw_info.get('os_name', 'Unknown')} {hw_info.get('os_version', '')}"))
+        
+        # CPU info
+        if hw_info.get("apple_silicon"):
+            print(info_row("Processor", f"Apple Silicon {hw_info.get('cpu_model', '')}", GREEN))
+        else:
+            print(info_row("Processor", hw_info.get('cpu_model', 'Unknown')))
+        
+        print(info_row("CPU Cores", f"{hw_info.get('cpu_cores', 'Unknown')} cores, {hw_info.get('cpu_threads', 'Unknown')} threads"))
+        
+        # RAM
+        if 'memory_gb' in hw_info:
+            print(info_row("Memory", f"{hw_info['memory_gb']:.1f} GB"))
+        
+        print(divider)
+        print(f"{status_side} {BOLD}Encoding Capabilities{RESET}{' ' * (menu_width - 23)}{status_side}")
+        
+        # Video encoders
+        if hw_info.get("has_videotoolbox") and hw_info.get("apple_silicon"):
+            print(info_row("Apple VideoToolbox", "Available (Hardware Acceleration)", GREEN))
+        elif hw_info.get("has_videotoolbox"):
+            print(info_row("Apple VideoToolbox", "Available", GREEN))
+        else:
+            print(info_row("Apple VideoToolbox", "Not Available", YELLOW))
+        
+        if hw_info.get("has_nvidia"):
+            print(info_row("NVIDIA GPU", f"{hw_info.get('gpu_model', 'Available')}", GREEN))
+            if hw_info.get("has_nvenc"):
+                print(info_row("NVIDIA NVENC", "Available (Hardware Acceleration)", GREEN))
+            else:
+                print(info_row("NVIDIA NVENC", "Not Available", YELLOW))
+        
+        if hw_info.get("has_intel_qsv"):
+            print(info_row("Intel QuickSync", "Available (Hardware Acceleration)", GREEN))
+        elif hw_info.get("has_intel"):
+            print(info_row("Intel QuickSync", "Not Available", YELLOW))
+        
+        if hw_info.get("has_vaapi"):
+            print(info_row("VA-API", "Available (Hardware Acceleration)", GREEN))
+        
+        # FFmpeg version
+        if hw_info.get("ffmpeg_version"):
+            print(info_row("FFmpeg", hw_info.get("ffmpeg_version", "Unknown")))
+        
+        print(divider)
+        print(f"{status_side} {BOLD}Performance Estimate{RESET}{' ' * (menu_width - 22)}{status_side}")
+        
+        # Performance rating
+        perf_score = 0
+        if hw_info.get("apple_silicon"):
+            perf_score += 4
+        elif hw_info.get("cpu_cores", 0) >= 8:
+            perf_score += 3
+        elif hw_info.get("cpu_cores", 0) >= 4:
+            perf_score += 2
+        else:
+            perf_score += 1
             
-            encoders = []
-            if 'libx264' in encoders_output:
-                encoders.append("H.264")
-            if 'libx265' in encoders_output:
-                encoders.append("HEVC/H.265")
-            if 'libaom-av1' in encoders_output:
-                encoders.append("AV1")
+        if hw_info.get("has_videotoolbox") or hw_info.get("has_nvenc") or hw_info.get("has_intel_qsv") or hw_info.get("has_vaapi"):
+            perf_score += 2
             
-            if encoders:
-                print_styled(CYAN, f"• Encoders:     {', '.join(encoders)}")
+        if hw_info.get("memory_gb", 0) >= 16:
+            perf_score += 2
+        elif hw_info.get("memory_gb", 0) >= 8:
+            perf_score += 1
+        
+        # Performance tier
+        performance_tier = ""
+        if perf_score >= 7:
+            performance_tier = f"{GREEN}Excellent{RESET} - Can handle 4K with high quality"
+        elif perf_score >= 5:
+            performance_tier = f"{CYAN}Good{RESET} - Suitable for 1080p high quality"
+        elif perf_score >= 3:
+            performance_tier = f"{YELLOW}Moderate{RESET} - Best for 1080p standard quality"
+        else:
+            performance_tier = f"{RED}Basic{RESET} - Recommended 720p, standard quality"
+        
+        print(info_row("Performance", performance_tier, ""))
+        
+        # Best settings recommendation
+        recommended_res = "3840x2160" if perf_score >= 7 else "1920x1080" if perf_score >= 3 else "1280x720"
+        recommended_quality = "veryslow" if perf_score >= 7 else "slow" if perf_score >= 5 else "medium" if perf_score >= 3 else "fast"
+        
+        print(info_row("Recommended Resolution", recommended_res))
+        print(info_row("Recommended Quality", recommended_quality))
+        
+        # Calculate expected encoding time per minute of video
+        base_time = 60  # seconds per minute of video at 1080p medium preset
+        time_factor = 1.0
+        
+        if "3840x2160" in recommended_res:
+            time_factor *= 4.0
+        elif "1280x720" in recommended_res:
+            time_factor *= 0.5
             
-            # Check hardware acceleration
-            try:
-                process = subprocess.run(['ffmpeg', '-hwaccels'], capture_output=True, text=True, check=True)
-                hwaccels_output = process.stdout
-                
-                hwaccels = []
-                if 'videotoolbox' in hwaccels_output:
-                    hwaccels.append("Apple VideoToolbox")
-                if 'cuda' in hwaccels_output:
-                    hwaccels.append("NVIDIA CUDA")
-                if 'qsv' in hwaccels_output:
-                    hwaccels.append("Intel QuickSync")
-                if 'vaapi' in hwaccels_output:
-                    hwaccels.append("VA-API")
-                
-                if hwaccels:
-                    print_styled(GREEN, f"• Hardware Accel: {', '.join(hwaccels)}")
-            except subprocess.SubprocessError:
-                pass
+        if "veryslow" in recommended_quality:
+            time_factor *= 4.0
+        elif "slow" in recommended_quality:
+            time_factor *= 2.0
+        elif "fast" in recommended_quality:
+            time_factor *= 0.5
             
-        except subprocess.SubprocessError:
-            pass
+        if hw_info.get("has_videotoolbox") or hw_info.get("has_nvenc") or hw_info.get("has_intel_qsv") or hw_info.get("has_vaapi"):
+            time_factor *= 0.25
+            
+        if hw_info.get("apple_silicon"):
+            time_factor *= 0.5
+        elif hw_info.get("cpu_cores", 0) >= 8:
+            time_factor *= 0.7
+            
+        estimated_time = base_time * time_factor
+        estimated_str = f"{int(estimated_time // 60)}:{int(estimated_time % 60):02d}" if estimated_time >= 60 else f"{int(estimated_time)} seconds"
+        
+        print(info_row("Est. Processing Time", f"{estimated_str} per minute of video"))
+        
+        print(status_box_bottom)
     else:
-        print_styled(RED, "• Installed:    No (FFmpeg not found)")
-        print_styled(GRAY, "  FFmpeg is required for encoding videos.")
-        print_styled(GRAY, "  Please install FFmpeg and run again.")
+        # Non-colored version
+        print("\nSystem Information:")
+        print("-" * menu_width)
+        print(f"Operating System: {hw_info.get('os_name', 'Unknown')} {hw_info.get('os_version', '')}")
+        print(f"Processor: {hw_info.get('cpu_model', 'Unknown')}")
+        print(f"CPU Cores: {hw_info.get('cpu_cores', 'Unknown')} cores, {hw_info.get('cpu_threads', 'Unknown')} threads")
+        
+        if 'memory_gb' in hw_info:
+            print(f"Memory: {hw_info['memory_gb']:.1f} GB")
+        
+        print("\nEncoding Capabilities:")
+        print("-" * menu_width)
+        
+        if hw_info.get("has_videotoolbox"):
+            print(f"Apple VideoToolbox: Available (Hardware Acceleration)")
+        else:
+            print(f"Apple VideoToolbox: Not Available")
+        
+        if hw_info.get("has_nvidia"):
+            print(f"NVIDIA GPU: {hw_info.get('gpu_model', 'Available')}")
+            if hw_info.get("has_nvenc"):
+                print(f"NVIDIA NVENC: Available (Hardware Acceleration)")
+            else:
+                print(f"NVIDIA NVENC: Not Available")
+        
+        if hw_info.get("has_intel_qsv"):
+            print(f"Intel QuickSync: Available (Hardware Acceleration)")
+        elif hw_info.get("has_intel"):
+            print(f"Intel QuickSync: Not Available")
+        
+        if hw_info.get("has_vaapi"):
+            print(f"VA-API: Available (Hardware Acceleration)")
+        
+        if hw_info.get("ffmpeg_version"):
+            print(f"FFmpeg: {hw_info.get('ffmpeg_version', 'Unknown')}")
+        
+        print("\nPerformance Estimate:")
+        print("-" * menu_width)
+        
+        # Performance rating
+        perf_score = 0
+        if hw_info.get("apple_silicon"):
+            perf_score += 4
+        elif hw_info.get("cpu_cores", 0) >= 8:
+            perf_score += 3
+        elif hw_info.get("cpu_cores", 0) >= 4:
+            perf_score += 2
+        else:
+            perf_score += 1
+            
+        if hw_info.get("has_videotoolbox") or hw_info.get("has_nvenc") or hw_info.get("has_intel_qsv") or hw_info.get("has_vaapi"):
+            perf_score += 2
+            
+        if hw_info.get("memory_gb", 0) >= 16:
+            perf_score += 2
+        elif hw_info.get("memory_gb", 0) >= 8:
+            perf_score += 1
+        
+        # Performance tier
+        if perf_score >= 7:
+            performance_tier = "Excellent - Can handle 4K with high quality"
+        elif perf_score >= 5:
+            performance_tier = "Good - Suitable for 1080p high quality"
+        elif perf_score >= 3:
+            performance_tier = "Moderate - Best for 1080p standard quality"
+        else:
+            performance_tier = "Basic - Recommended 720p, standard quality"
+        
+        print(f"Performance: {performance_tier}")
+        
+        # Best settings recommendation
+        recommended_res = "3840x2160" if perf_score >= 7 else "1920x1080" if perf_score >= 3 else "1280x720"
+        recommended_quality = "veryslow" if perf_score >= 7 else "slow" if perf_score >= 5 else "medium" if perf_score >= 3 else "fast"
+        
+        print(f"Recommended Resolution: {recommended_res}")
+        print(f"Recommended Quality: {recommended_quality}")
+        
+        # Calculate expected encoding time per minute of video
+        base_time = 60  # seconds per minute of video at 1080p medium preset
+        time_factor = 1.0
+        
+        if "3840x2160" in recommended_res:
+            time_factor *= 4.0
+        elif "1280x720" in recommended_res:
+            time_factor *= 0.5
+            
+        if "veryslow" in recommended_quality:
+            time_factor *= 4.0
+        elif "slow" in recommended_quality:
+            time_factor *= 2.0
+        elif "fast" in recommended_quality:
+            time_factor *= 0.5
+            
+        if hw_info.get("has_videotoolbox") or hw_info.get("has_nvenc") or hw_info.get("has_intel_qsv") or hw_info.get("has_vaapi"):
+            time_factor *= 0.25
+            
+        if hw_info.get("apple_silicon"):
+            time_factor *= 0.5
+        elif hw_info.get("cpu_cores", 0) >= 8:
+            time_factor *= 0.7
+            
+        estimated_time = base_time * time_factor
+        estimated_str = f"{int(estimated_time // 60)}:{int(estimated_time % 60):02d}" if estimated_time >= 60 else f"{int(estimated_time)} seconds"
+        
+        print(f"Est. Processing Time: {estimated_str} per minute of video")
+    
+    # Best encoders selection
+    print()
+    if USE_COLORS:
+        encoder_title = " Optimal Encoder Selection "
+        padding = (menu_width - len(encoder_title)) // 2
+        if USE_UNICODE:
+            print(f"{' ' * padding}{BOLD}{GREEN}•{encoder_title}•{RESET}")
+            print(f"{GRAY}{'─' * menu_width}{RESET}")
+        else:
+            print(f"{' ' * padding}{BOLD}{GREEN}{encoder_title}{RESET}")
+            print(f"{GRAY}{'-' * menu_width}{RESET}")
+    else:
+        print("Optimal Encoder Selection:")
+        print("-" * menu_width)
+    
+    # Detect best encoder and explain why
+    encoder = detect_best_encoder()
+    encoder_reason = ""
+    
+    if "videotoolbox" in encoder:
+        encoder_reason = "Apple's VideoToolbox for optimal performance on Mac"
+    elif "nvenc" in encoder:
+        encoder_reason = "NVIDIA hardware encoding for excellent performance"
+    elif "qsv" in encoder:
+        encoder_reason = "Intel QuickSync for hardware-accelerated encoding"
+    elif "vaapi" in encoder:
+        encoder_reason = "VA-API hardware acceleration for Linux"
+    elif "libx265" in encoder:
+        encoder_reason = "H.265/HEVC software encoding for better quality at smaller file sizes"
+    else:
+        encoder_reason = "H.264/AVC software encoding for optimal compatibility"
+    
+    if USE_COLORS:
+        print(f"\n{' ' * 4}{GREEN}▶{RESET} {BOLD}Recommended encoder:{RESET} {CYAN}{encoder}{RESET}")
+        print(f"{' ' * 6}{GRAY}{encoder_reason}{RESET}")
+    else:
+        print(f"\nRecommended encoder: {encoder}")
+        print(f"  {encoder_reason}")
     
     print()
-    draw_divider()
     
-    # Wait for user input before returning to main menu
-    input("Press Enter to continue...")
+    # Add a section for hardware acceleration status
+    has_hw_accel = hw_info.get("has_videotoolbox") or hw_info.get("has_nvenc") or hw_info.get("has_intel_qsv") or hw_info.get("has_vaapi")
+    
+    if USE_COLORS:
+        if has_hw_accel:
+            hw_icon = f"{GREEN}✓{RESET}" if USE_UNICODE else f"{GREEN}√{RESET}"
+            print(f"{' ' * 4}{hw_icon} {BOLD}Hardware acceleration:{RESET} {GREEN}Available{RESET}")
+            
+            # List available hardware acceleration methods
+            if hw_info.get("has_videotoolbox"):
+                print(f"{' ' * 6}• Apple VideoToolbox")
+            if hw_info.get("has_nvenc"):
+                print(f"{' ' * 6}• NVIDIA NVENC")
+            if hw_info.get("has_intel_qsv"):
+                print(f"{' ' * 6}• Intel QuickSync")
+            if hw_info.get("has_vaapi"):
+                print(f"{' ' * 6}• VA-API")
+        else:
+            hw_icon = f"{YELLOW}⚠{RESET}" if USE_UNICODE else f"{YELLOW}!{RESET}"
+            print(f"{' ' * 4}{hw_icon} {BOLD}Hardware acceleration:{RESET} {YELLOW}Not available{RESET}")
+            print(f"{' ' * 6}{GRAY}Using software encoding only{RESET}")
+    else:
+        if has_hw_accel:
+            print(f"Hardware acceleration: Available")
+            
+            # List available hardware acceleration methods
+            if hw_info.get("has_videotoolbox"):
+                print(f"  • Apple VideoToolbox")
+            if hw_info.get("has_nvenc"):
+                print(f"  • NVIDIA NVENC")
+            if hw_info.get("has_intel_qsv"):
+                print(f"  • Intel QuickSync")
+            if hw_info.get("has_vaapi"):
+                print(f"  • VA-API")
+        else:
+            print(f"Hardware acceleration: Not available")
+            print(f"  Using software encoding only")
+    
+    input("\nPress Enter to return to the main menu...")
 
 def load_settings():
     """Load settings from file or use defaults"""
@@ -374,8 +676,10 @@ def count_files(directory, extensions):
                 any(f.lower().endswith(ext) for ext in extensions)])
 
 def detect_best_encoder():
-    """Detect the best encoder based on the system capabilities"""
+    """Detect the best encoder based on the system capabilities, prioritizing speed over quality"""
     hw_info = get_hardware_info()
+    
+    print_styled(CYAN, "Detecting fastest available encoder...")
     
     # Check available encoders
     try:
@@ -386,34 +690,40 @@ def detect_best_encoder():
         process = subprocess.run(['ffmpeg', '-hwaccels'], capture_output=True, text=True, check=True)
         hwaccels_output = process.stdout
         
-        # Apple Silicon with VideoToolbox
-        if hw_info["apple_silicon"] and 'videotoolbox' in hwaccels_output:
-            return "h264_videotoolbox" if "h264_videotoolbox" in encoders_output else "libx264"
+        # Hardware encoding is always faster, so prioritize any hardware encoder
         
-        # NVIDIA GPU with NVENC
+        # Apple Silicon with VideoToolbox - fastest for Mac
+        if 'videotoolbox' in hwaccels_output:
+            if "h264_videotoolbox" in encoders_output:
+                print_styled(GREEN, "✓ Using Apple VideoToolbox hardware acceleration for maximum speed")
+                return "h264_videotoolbox"
+            
+        # NVIDIA GPU with NVENC - extremely fast
         if 'cuda' in hwaccels_output and 'h264_nvenc' in encoders_output:
+            print_styled(GREEN, "✓ Using NVIDIA NVENC hardware acceleration for maximum speed")
             return "h264_nvenc"
         
-        # Intel QuickSync
+        # Intel QuickSync - good speed
         if 'qsv' in hwaccels_output and 'h264_qsv' in encoders_output:
+            print_styled(GREEN, "✓ Using Intel QuickSync hardware acceleration for maximum speed")
             return "h264_qsv"
         
-        # VA-API
+        # VA-API - decent speed on Linux
         if 'vaapi' in hwaccels_output and 'h264_vaapi' in encoders_output:
+            print_styled(GREEN, "✓ Using VA-API hardware acceleration for maximum speed")
             return "h264_vaapi"
         
-        # Software encoders
-        if 'libx265' in encoders_output:
-            return "libx265"  # HEVC is better quality but slower
-        
-        # Default to H.264
+        # No hardware acceleration available, use fastest software encoder
+        # H.264 is much faster than H.265 for encoding
+        print_styled(YELLOW, "! No hardware acceleration detected. Using libx264 with ultrafast preset")
         return "libx264"
     
     except subprocess.SubprocessError:
+        print_styled(RED, "✗ Error detecting encoders, falling back to libx264")
         return "libx264"  # Default
 
 def create_slideshow_interactive():
-    """Create a slideshow with smart interactive settings"""
+    """Create a slideshow with smart interactive settings and modern design aesthetics"""
     show_banner()
     
     # Load settings
@@ -422,88 +732,190 @@ def create_slideshow_interactive():
     # Show a spinner while scanning
     show_spinner("Scanning for media files", 1)
     
+    # Get terminal width for centered content
+    width = shutil.get_terminal_size().columns
+    menu_width = min(80, width - 10)
+    
     # Auto-organize images and find matching audio
-    print_styled(BOLD, "Analyzing files...")
+    if USE_COLORS:
+        print(f"\n{BOLD}Analyzing files...{RESET}")
+    else:
+        print("\nAnalyzing files...")
+    
     media_data = auto_organize_images(recursive=settings.get("recursive_scan", False))
     
     # Check if we found any images
     if media_data["images"]["count"] == 0:
-        print_styled(RED, "Error: No images found in images/original/ directory")
-        print_styled(GRAY, "Please add your images to the images/original/ directory and try again.")
+        if USE_COLORS:
+            print(f"\n{RED}⚠ No images found in images/original/ directory{RESET}")
+            print(f"{GRAY}Please add your images to the images/original/ directory and try again.{RESET}")
+        else:
+            print("\nError: No images found in images/original/ directory")
+            print("Please add your images to the images/original/ directory and try again.")
         
         # Offer to create test images for demo purposes
-        if ask_question("Would you like to create test images for a demo", default="n", options=["y", "n"]) == "y":
+        create_test = ask_question("Would you like to create test images for a demo", default="n", options=["y", "n"]) == "y"
+        if create_test:
             create_test_images()
             media_data = auto_organize_images()  # Rescan after creating test images
             if media_data["images"]["count"] == 0:
-                print_styled(RED, "Failed to create test images.")
+                if USE_COLORS:
+                    print(f"\n{RED}Failed to create test images.{RESET}")
+                else:
+                    print("\nFailed to create test images.")
                 input("\nPress Enter to return to the main menu...")
                 return
         else:
             input("\nPress Enter to return to the main menu...")
             return
     
-    # Show image analysis results
-    print_styled(GREEN, f"Found {media_data['images']['count']} images")
-    
-    # Group analysis information
-    if media_data["images"]["groups"]["sequence"]:
-        largest_sequence = max(media_data["images"]["groups"]["sequence"].values(), key=len)
-        if len(largest_sequence) > 1:
-            print_styled(CYAN, f"✓ Detected sequence with {len(largest_sequence)} images")
-    
-    if media_data["images"]["groups"]["date"]:
-        print_styled(CYAN, f"✓ Detected {len(media_data['images']['groups']['date'])} date-based groups")
-    
-    # Audio file information
-    if media_data["audio"]["selected"]:
-        audio_file = media_data["audio"]["selected"]
-        audio_filename = os.path.basename(audio_file)
-        print_styled(GREEN, f"Found matching audio file: {audio_filename}")
+    # Display a status box with file analysis results
+    if USE_COLORS:
+        # Box style for media status
+        status_box_top = f"{LIGHT_GRAY}┌{'─' * (menu_width - 2)}┐{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        status_box_bottom = f"{LIGHT_GRAY}└{'─' * (menu_width - 2)}┘{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        status_side = f"{LIGHT_GRAY}│{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}|{RESET}"
+        divider = f"{LIGHT_GRAY}├{'─' * (menu_width - 2)}┤{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
         
-        if media_data["audio"]["duration"]:
-            mins, secs = divmod(media_data["audio"]["duration"], 60)
-            print_styled(CYAN, f"✓ Audio duration: {int(mins)}:{int(secs):02d}")
-            print_styled(CYAN, f"✓ Average slide duration: {media_data['slide_duration']:.2f} seconds")
-    else:
-        audio_file = None
-        if media_data["audio"]["files"]["count"] > 0:
-            print_styled(YELLOW, f"Found {media_data['audio']['files']['count']} audio files but no good match")
+        print("\n" + status_box_top)
+        print(f"{status_side} {BOLD}Media Analysis Results{RESET}{' ' * (menu_width - 22)}{status_side}")
+        print(divider)
+        
+        # Images section
+        check = f"{GREEN}✓{RESET}" if USE_UNICODE else f"{GREEN}√{RESET}"
+        print(f"{status_side} {BOLD}Images:{RESET} {GREEN}{media_data['images']['count']} found{RESET}{' ' * (menu_width - 18 - len(str(media_data['images']['count'])))} {status_side}")
+        
+        # Group analysis information
+        if media_data["images"]["groups"]["sequence"]:
+            largest_sequence = max(media_data["images"]["groups"]["sequence"].values(), key=len)
+            if len(largest_sequence) > 1:
+                print(f"{status_side} {check} Detected sequence with {len(largest_sequence)} images{' ' * (menu_width - 36 - len(str(len(largest_sequence))))} {status_side}")
+        
+        if media_data["images"]["groups"]["date"]:
+            date_count = len(media_data["images"]["groups"]["date"])
+            print(f"{status_side} {check} Detected {date_count} date-based groups{' ' * (menu_width - 31 - len(str(date_count)))} {status_side}")
+        
+        print(divider)
+        
+        # Audio section
+        if media_data["audio"]["selected"]:
+            audio_file = media_data["audio"]["selected"]
+            audio_filename = os.path.basename(audio_file)
+            max_filename_len = menu_width - 24
+            if len(audio_filename) > max_filename_len:
+                audio_filename = audio_filename[:max_filename_len-3] + "..."
             
-            # Ask user if they want to select an audio file
-            if ask_question("Would you like to select an audio file", default="y", options=["y", "n"]) == "y":
-                print_styled(GRAY, "Available audio files:")
-                audio_list = [f for f in media_data["audio"]["files"]["files"] if f["type"] == "audio"]
-                for i, file_info in enumerate(audio_list, 1):
-                    print_styled(GRAY, f"{i}. {file_info['name']}")
+            print(f"{status_side} {BOLD}Audio:{RESET} {GREEN}{audio_filename}{RESET}{' ' * (menu_width - 9 - len(audio_filename))} {status_side}")
+            
+            if media_data["audio"]["duration"]:
+                mins, secs = divmod(media_data["audio"]["duration"], 60)
+                duration_str = f"{int(mins)}:{int(secs):02d}"
+                print(f"{status_side} {check} Audio duration: {duration_str}{' ' * (menu_width - 18 - len(duration_str))} {status_side}")
                 
-                choice = ask_question("Which audio file would you like to use", default="1")
-                try:
-                    choice_idx = int(choice) - 1
-                    if 0 <= choice_idx < len(audio_list):
-                        audio_file = audio_list[choice_idx]["path"]
-                        # Update duration information
-                        media_data["audio"]["selected"] = audio_file
-                        media_data["audio"]["duration"] = get_audio_duration(audio_file)
-                        
-                        # Recalculate slide duration
-                        if media_data["audio"]["duration"] and media_data["images"]["count"] > 0:
-                            raw_duration = media_data["audio"]["duration"] / media_data["images"]["count"]
-                            if raw_duration < 2.0:
-                                media_data["slide_duration"] = 2.0
-                            elif raw_duration > 6.0:
-                                media_data["slide_duration"] = 6.0
-                            else:
-                                media_data["slide_duration"] = raw_duration
-                except ValueError:
-                    print_styled(YELLOW, "Invalid choice, continuing without audio")
+                slide_duration = f"{media_data['slide_duration']:.2f} seconds"
+                print(f"{status_side} {check} Average slide duration: {slide_duration}{' ' * (menu_width - 26 - len(slide_duration))} {status_side}")
         else:
-            print_styled(YELLOW, "No audio files found in song/ directory")
-            use_audio = ask_question("Do you want to continue without audio", default="y", options=["y", "n"]) == "y"
-            if not use_audio:
-                print_styled(GRAY, "Please add your audio file to the song/ directory and try again.")
-                input("\nPress Enter to return to the main menu...")
-                return
+            if media_data["audio"]["files"]["count"] > 0:
+                audio_count = media_data["audio"]["files"]["count"] 
+                print(f"{status_side} {BOLD}Audio:{RESET} {YELLOW}Found {audio_count} files (no auto-match){RESET}{' ' * (menu_width - 29 - len(str(audio_count)))} {status_side}")
+            else:
+                print(f"{status_side} {BOLD}Audio:{RESET} {YELLOW}No audio files found{RESET}{' ' * (menu_width - 27)} {status_side}")
+        
+        print(status_box_bottom)
+    else:
+        # Non-colored version
+        print(f"\nMedia Analysis Results")
+        print(f"-" * menu_width)
+        print(f"Images: {media_data['images']['count']} found")
+        
+        if media_data["images"]["groups"]["sequence"]:
+            largest_sequence = max(media_data["images"]["groups"]["sequence"].values(), key=len)
+            if len(largest_sequence) > 1:
+                print(f"✓ Detected sequence with {len(largest_sequence)} images")
+        
+        if media_data["images"]["groups"]["date"]:
+            print(f"✓ Detected {len(media_data['images']['groups']['date'])} date-based groups")
+        
+        print("-" * menu_width)
+        
+        if media_data["audio"]["selected"]:
+            audio_file = media_data["audio"]["selected"]
+            audio_filename = os.path.basename(audio_file)
+            print(f"Audio: {audio_filename}")
+            
+            if media_data["audio"]["duration"]:
+                mins, secs = divmod(media_data["audio"]["duration"], 60)
+                print(f"✓ Audio duration: {int(mins)}:{int(secs):02d}")
+                print(f"✓ Average slide duration: {media_data['slide_duration']:.2f} seconds")
+        else:
+            if media_data["audio"]["files"]["count"] > 0:
+                print(f"Audio: Found {media_data['audio']['files']['count']} files (no auto-match)")
+            else:
+                print(f"Audio: No audio files found")
+        
+        print("-" * menu_width)
+    
+    # Audio selection - if needed
+    audio_file = media_data["audio"]["selected"]
+    if not audio_file and media_data["audio"]["files"]["count"] > 0:
+        print()
+        if USE_COLORS:
+            print(f"{BLUE}▶{RESET} {BOLD}Audio Selection{RESET}")
+        else:
+            print("Audio Selection")
+        
+        select_audio = ask_question("Would you like to select an audio file", default="y", options=["y", "n"]) == "y"
+        if select_audio:
+            audio_list = [f for f in media_data["audio"]["files"]["files"] if f["type"] == "audio"]
+            
+            # Display available audio files
+            if USE_COLORS:
+                print(f"\n{GRAY}Available audio files:{RESET}")
+                for i, file_info in enumerate(audio_list, 1):
+                    print(f"{' ' * 4}{CYAN}{i}.{RESET} {file_info['name']}")
+            else:
+                print("\nAvailable audio files:")
+                for i, file_info in enumerate(audio_list, 1):
+                    print(f"  {i}. {file_info['name']}")
+            
+            choice = ask_question("Which audio file would you like to use", default="1")
+            try:
+                choice_idx = int(choice) - 1
+                if 0 <= choice_idx < len(audio_list):
+                    audio_file = audio_list[choice_idx]["path"]
+                    # Update duration information
+                    media_data["audio"]["selected"] = audio_file
+                    media_data["audio"]["duration"] = get_audio_duration(audio_file)
+                    
+                    # Recalculate slide duration
+                    if media_data["audio"]["duration"] and media_data["images"]["count"] > 0:
+                        raw_duration = media_data["audio"]["duration"] / media_data["images"]["count"]
+                        if raw_duration < 2.0:
+                            media_data["slide_duration"] = 2.0
+                        elif raw_duration > 6.0:
+                            media_data["slide_duration"] = 6.0
+                        else:
+                            media_data["slide_duration"] = raw_duration
+                    
+                    if USE_COLORS:
+                        print(f"\n{GREEN}Selected: {os.path.basename(audio_file)}{RESET}")
+                    else:
+                        print(f"\nSelected: {os.path.basename(audio_file)}")
+            except ValueError:
+                if USE_COLORS:
+                    print(f"\n{YELLOW}Invalid choice, continuing without audio{RESET}")
+                else:
+                    print("\nInvalid choice, continuing without audio")
+    elif not audio_file:
+        print()
+        use_audio = ask_question("Do you want to continue without audio", default="y", options=["y", "n"]) == "y"
+        if not use_audio:
+            if USE_COLORS:
+                print(f"\n{GRAY}Please add your audio file to the song/ directory and try again.{RESET}")
+            else:
+                print("\nPlease add your audio file to the song/ directory and try again.")
+            input("\nPress Enter to return to the main menu...")
+            return
     
     # Smart project name suggestion
     suggested_name = ""
@@ -528,7 +940,19 @@ def create_slideshow_interactive():
     
     # Collect slideshow settings with smart defaults
     print()
-    print_styled(BOLD, "Slideshow Settings")
+    if USE_COLORS:
+        section_title = " Slideshow Settings "
+        padding = (menu_width - len(section_title)) // 2
+        if USE_UNICODE:
+            print(f"{' ' * padding}{BOLD}{PURPLE}•{section_title}•{RESET}")
+            print(f"{GRAY}{'─' * menu_width}{RESET}")
+        else:
+            print(f"{' ' * padding}{BOLD}{PURPLE}{section_title}{RESET}")
+            print(f"{GRAY}{'-' * menu_width}{RESET}")
+    else:
+        print("Slideshow Settings")
+        print("-" * menu_width)
+    
     print()
     
     # Title with smart suggestion
@@ -537,9 +961,15 @@ def create_slideshow_interactive():
     # Resolution with smart default based on image analysis
     # TODO: Add image resolution detection for better defaults
     resolutions = ["1280x720", "1920x1080", "2560x1440", "3840x2160"]
-    print_styled(GRAY, "Available resolutions:")
-    for i, res in enumerate(resolutions, 1):
-        print_styled(GRAY, f"{i}. {res}")
+    
+    if USE_COLORS:
+        print(f"\n{GRAY}Available resolutions:{RESET}")
+        for i, res in enumerate(resolutions, 1):
+            print(f"{' ' * 4}{CYAN}{i}.{RESET} {res}")
+    else:
+        print("\nAvailable resolutions:")
+        for i, res in enumerate(resolutions, 1):
+            print(f"  {i}. {res}")
     
     # Default to 1080p for most cases, 4K for large photo sets
     default_res = "2" if media_data["images"]["count"] < 100 else "4"
@@ -556,19 +986,23 @@ def create_slideshow_interactive():
     # Quality presets with hardware-aware defaults
     hw_info = get_hardware_info()
     
-    # Determine sensible default based on hardware
-    default_quality = "2"  # Standard quality is default
-    
-    # If we have good CPU or GPU acceleration, suggest higher quality
-    if hw_info.get("apple_silicon") or (HAVE_PSUTIL and psutil.cpu_count(logical=False) >= 8):
-        default_quality = "3"  # Higher quality for better hardware
+    # Determine sensible default based on hardware - ALWAYS CHOOSE FASTEST
+    default_quality = "1"  # Maximum Performance is now default
     
     quality_presets = ["ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow"]
-    print_styled(GRAY, "Quality presets (faster → better quality):")
-    print_styled(GRAY, "1. Maximum Performance (ultrafast)")
-    print_styled(GRAY, "2. Standard Quality (medium)")
-    print_styled(GRAY, "3. Ultra High Quality (veryslow)")
-    print_styled(GRAY, "4. Custom")
+    
+    if USE_COLORS:
+        print(f"\n{GRAY}Quality presets:{RESET}")
+        print(f"{' ' * 4}{CYAN}1.{RESET} Maximum Performance {GREEN}(ultrafast - maximizes speed){RESET} [RECOMMENDED]")
+        print(f"{' ' * 4}{CYAN}2.{RESET} Balanced {GRAY}(medium - slower but better quality){RESET}")
+        print(f"{' ' * 4}{CYAN}3.{RESET} High Quality {YELLOW}(veryslow - very slow encoding){RESET}")
+        print(f"{' ' * 4}{CYAN}4.{RESET} Custom {GRAY}(advanced){RESET}")
+    else:
+        print("\nQuality presets (faster → better quality):")
+        print("  1. Maximum Performance (ultrafast) [RECOMMENDED]")
+        print("  2. Balanced (medium)")
+        print("  3. High Quality (veryslow)")
+        print("  4. Custom")
     
     quality_choice = ask_question("Choose quality preset", default=default_quality)
     try:
@@ -580,9 +1014,14 @@ def create_slideshow_interactive():
         elif q_choice == 3:
             quality = "veryslow"
         elif q_choice == 4:
-            print_styled(GRAY, "Available presets:")
-            for i, preset in enumerate(quality_presets, 1):
-                print_styled(GRAY, f"{i}. {preset}")
+            if USE_COLORS:
+                print(f"\n{GRAY}Available presets:{RESET}")
+                for i, preset in enumerate(quality_presets, 1):
+                    print(f"{' ' * 4}{CYAN}{i}.{RESET} {preset}")
+            else:
+                print("\nAvailable presets:")
+                for i, preset in enumerate(quality_presets, 1):
+                    print(f"  {i}. {preset}")
             
             preset_choice = ask_question("Choose preset", default="6")
             try:
@@ -607,27 +1046,79 @@ def create_slideshow_interactive():
     encoder = detect_best_encoder()
     use_hardware_accel = "qsv" in encoder or "nvenc" in encoder or "videotoolbox" in encoder or "vaapi" in encoder
     
-    # Create command
+    # Create command - Show summary in a nice box
     print()
-    print_styled(BOLD, "Creating Slideshow")
-    print()
-    print_styled(CYAN, f"Title:      {slideshow_title}")
-    print_styled(CYAN, f"Resolution: {resolution}")
-    print_styled(CYAN, f"Quality:    {quality}")
-    print_styled(CYAN, f"Output:     {output_filename}")
-    print_styled(CYAN, f"Encoder:    {encoder}{' (hardware accelerated)' if use_hardware_accel else ''}")
+    if USE_COLORS:
+        summary_title = " Slideshow Summary "
+        padding = (menu_width - len(summary_title)) // 2
+        if USE_UNICODE:
+            print(f"{' ' * padding}{BOLD}{GREEN}•{summary_title}•{RESET}")
+            print(f"{GRAY}{'─' * menu_width}{RESET}")
+        else:
+            print(f"{' ' * padding}{BOLD}{GREEN}{summary_title}{RESET}")
+            print(f"{GRAY}{'-' * menu_width}{RESET}")
+        
+        # Box style for summary
+        summary_box_top = f"{LIGHT_GRAY}┌{'─' * (menu_width - 2)}┐{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        summary_box_bottom = f"{LIGHT_GRAY}└{'─' * (menu_width - 2)}┘{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        summary_side = f"{LIGHT_GRAY}│{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}|{RESET}"
+        
+        # Function to create summary row
+        def summary_row(label, value, extra=""):
+            label = f"{BOLD}{label}:{RESET}"
+            padding = menu_width - len(label) - len(value) - len(extra) - 5
+            if extra:
+                return f"{summary_side} {label} {CYAN}{value}{RESET} {GRAY}{extra}{RESET}{' ' * padding} {summary_side}"
+            else:
+                return f"{summary_side} {label} {CYAN}{value}{RESET}{' ' * padding} {summary_side}"
+        
+        print(summary_box_top)
+        print(summary_row("Title", slideshow_title))
+        print(summary_row("Resolution", resolution))
+        print(summary_row("Quality", quality))
+        print(summary_row("Output", output_filename))
+        
+        hw_text = "(hardware accelerated)" if use_hardware_accel else ""
+        print(summary_row("Encoder", encoder, hw_text))
+        
+        if audio_file:
+            print(summary_row("Audio", os.path.basename(audio_file)))
+            duration_str = f"{media_data['audio']['duration']:.2f} seconds"
+            print(summary_row("Duration", duration_str))
+        
+        print(summary_row("Images", str(media_data['images']['count']) + " images"))
+        slide_duration_str = f"{media_data['slide_duration']:.2f} seconds"
+        print(summary_row("Per slide", slide_duration_str))
+        print(summary_box_bottom)
+    else:
+        print("Slideshow Summary")
+        print("-" * menu_width)
+        print(f"Title:      {slideshow_title}")
+        print(f"Resolution: {resolution}")
+        print(f"Quality:    {quality}")
+        print(f"Output:     {output_filename}")
+        print(f"Encoder:    {encoder}{' (hardware accelerated)' if use_hardware_accel else ''}")
+        
+        if audio_file:
+            print(f"Audio:      {os.path.basename(audio_file)}")
+            print(f"Duration:   {media_data['audio']['duration']:.2f} seconds")
+        
+        print(f"Images:     {media_data['images']['count']} images")
+        print(f"Per slide:  {media_data['slide_duration']:.2f} seconds")
+        print("-" * menu_width)
     
-    if audio_file:
-        print_styled(CYAN, f"Audio:      {os.path.basename(audio_file)}")
-        print_styled(CYAN, f"Duration:   {media_data['audio']['duration']:.2f} seconds")
-    
-    print_styled(CYAN, f"Images:     {media_data['images']['count']} images")
-    print_styled(CYAN, f"Per slide:  {media_data['slide_duration']:.2f} seconds")
     print()
+    
+    # Confirm with styled button
+    if USE_COLORS and USE_UNICODE:
+        print(f"{' ' * 4}{GREEN}▶{RESET} Ready to begin")
     
     # Confirm
     if ask_question("Start encoding", default="y", options=["y", "n"]) != "y":
-        print_styled(GRAY, "Encoding cancelled")
+        if USE_COLORS:
+            print(f"\n{GRAY}Encoding cancelled{RESET}")
+        else:
+            print("\nEncoding cancelled")
         input("\nPress Enter to return to the main menu...")
         return
     
@@ -648,79 +1139,36 @@ def create_slideshow_interactive():
         media_data["slide_duration"]
     )
     
-    # Launch the encoding
-    run_encoding()
+    # Run encoding with proper monitoring
+    print_styled(GREEN, "Starting encoding process...")
+    
+    # Use the improved run_encoding function
+    if run_encoding():
+        print_styled(GREEN, "Encoding completed successfully")
+    else:
+        print_styled(RED, "Encoding failed")
+    
+    input("\nPress Enter to return to the main menu...")
 
-def create_test_images():
-    """Create test images for demo purposes"""
-    print_styled(BOLD, "Creating test images...")
+def create_encoding_script(slideshow_title, resolution, quality, output_filename, encoder, audio_file, image_list, slide_duration):
+    """
+    Create an encoding script file with the provided slideshow settings.
+    This generates the run_encode.py file with all necessary parameters.
+    """
+    # Create necessary directories
+    os.makedirs("temp", exist_ok=True)
     
-    # Create directories if needed
-    os.makedirs("images/original", exist_ok=True)
+    # Always override quality to 'ultrafast' for maximum speed
+    original_quality = quality
+    quality = "ultrafast"  # Force ultrafast for maximum speed
     
-    # Try to import PIL for image creation
-    try:
-        from PIL import Image, ImageDraw
-        
-        # Create 5 test images with different colors
-        colors = [
-            (73, 109, 137),    # Steel blue
-            (189, 79, 108),    # Raspberry
-            (96, 153, 102),    # Forest green
-            (234, 185, 95),    # Golden yellow
-            (165, 105, 189)    # Purple
-        ]
-        
-        width, height = 1920, 1080
-        
-        for i in range(5):
-            img = Image.new('RGB', (width, height), color=colors[i])
-            draw = ImageDraw.Draw(img)
-            
-            # Draw some test content
-            margin = 100
-            draw.rectangle(
-                (margin, margin, width - margin, height - margin),
-                outline=(255, 255, 255),
-                width=10
-            )
-            
-            # Add text annotation
-            text_position = (width // 2 - 100, height // 2 - 50)
-            
-            # Create text by drawing it manually (no need for fonts)
-            for offset in range(-2, 3):
-                for xoffset in range(-2, 3):
-                    draw.text(
-                        (text_position[0] + xoffset, text_position[1] + offset),
-                        f"Test Slide {i+1}",
-                        fill=(0, 0, 0)
-                    )
-            draw.text(text_position, f"Test Slide {i+1}", fill=(255, 255, 255))
-            
-            # Save the image
-            filename = f"images/original/test_slide_{i+1:02d}.jpg"
-            img.save(filename, quality=95)
-            
-        print_styled(GREEN, "✓ Created 5 test images in images/original/")
-        return True
+    # Always use hardware acceleration when available, otherwise force libx264
+    if not any(hw in encoder for hw in ["videotoolbox", "nvenc", "qsv", "vaapi"]):
+        encoder = "libx264"
     
-    except ImportError:
-        print_styled(RED, "✗ Could not create test images - PIL/Pillow not installed")
-        return False
-    except Exception as e:
-        print_styled(RED, f"✗ Error creating test images: {e}")
-        return False
-
-def create_encoding_script(title, resolution, quality, output_filename, encoder, audio_file, image_paths=None, slide_duration=3.0):
-    """Create a Python script to run the encoding process"""
-    script_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "run_encode.py")
-    
-    # Escape quotes in title
-    title = title.replace('"', '\\"')
-    
+    # Build the encoding script content
     script_content = f"""#!/usr/bin/env python3
-# SlideSonic (2025) - Encoding Script
+# SlideSonic (2025) - Encoding Script - MAXIMUM SPEED OPTIMIZATION
 # Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 import os
@@ -731,58 +1179,31 @@ from datetime import datetime
 import json
 
 # Slideshow settings
-TITLE = "{title}"
+TITLE = "{slideshow_title}"
 RESOLUTION = "{resolution}"
-QUALITY_PRESET = "{quality}"
+QUALITY_PRESET = "{quality}"  # Using ultrafast preset for maximum speed
 OUTPUT_FILENAME = "{output_filename}"
 ENCODER = "{encoder}"
-AUDIO_FILE = {repr(audio_file)}
+AUDIO_FILE = {repr(audio_file) if audio_file else "None"}
 SLIDE_DURATION = {slide_duration}
+
+# Print optimization info
+print("SPEED OPTIMIZATION: Using maximum speed settings")
+print(f"ENCODER: {{ENCODER}} with PRESET: {{QUALITY_PRESET}}")
 
 # Ensure required directories exist
 os.makedirs("temp", exist_ok=True)
-os.makedirs("logs", exist_ok=True)
+os.makedirs("output", exist_ok=True)
 
-# Get all images in the original directory
-IMAGE_DIR = "images/original"
-"""
-
-    # If we have optimized image paths, use them
-    if image_paths and len(image_paths) > 0:
-        # Convert paths to relative if they're absolute
-        relative_paths = []
-        for path in image_paths:
-            if os.path.isabs(path):
-                try:
-                    rel_path = os.path.relpath(path)
-                    relative_paths.append(rel_path)
-                except ValueError:
-                    # If can't make relative, use as is
-                    relative_paths.append(path)
-            else:
-                relative_paths.append(path)
-                
-        script_content += f"""
 # Using smart-sorted image list
-image_files = {json.dumps(relative_paths)}
+image_files = {repr(image_list)}
 print(f"Using {{len(image_files)}} images in optimized order")
-"""
-    else:
-        script_content += """
-# Get all images in the original directory
-image_files = [f for f in os.listdir(IMAGE_DIR) if os.path.isfile(os.path.join(IMAGE_DIR, f)) and 
-               any(f.lower().endswith(ext) for ext in ['.jpg', '.jpeg', '.png', '.gif'])]
 
-# Sort images by name
-image_files.sort()
-"""
-
-    script_content += """
 if not image_files:
     print("Error: No images found in images/original/ directory")
     sys.exit(1)
 
-print(f"Found {len(image_files)} images")
+print(f"Found {{len(image_files)}} images")
 
 # Calculate duration per slide based on audio duration
 audio_duration = None
@@ -791,7 +1212,7 @@ if AUDIO_FILE:
         cmd = ['ffprobe', '-v', 'error', '-show_entries', 'format=duration', 
                '-of', 'default=noprint_wrappers=1:nokey=1', AUDIO_FILE]
         audio_duration = float(subprocess.check_output(cmd, text=True).strip())
-        print(f"Audio duration: {audio_duration:.2f} seconds")
+        print(f"Audio duration: {{audio_duration:.2f}} seconds")
     except (subprocess.SubprocessError, ValueError):
         print("Warning: Could not determine audio duration")
 
@@ -800,49 +1221,48 @@ slide_duration = SLIDE_DURATION
 if audio_duration:
     # Make sure slides fit within audio, adjusting if necessary
     total_duration = slide_duration * len(image_files)
-    if total_duration > audio_duration * 1.1:  # Allow slight overflow
-        # Need to shorten slide duration to fit audio
-        slide_duration = max(1.5, audio_duration / len(image_files))
-        print(f"Adjusted slide duration to {slide_duration:.2f}s to fit audio")
-    elif total_duration < audio_duration * 0.9:  # If much shorter than audio
+    if total_duration < audio_duration * 0.9:  # If much shorter than audio
         # Can lengthen slide duration to better use the audio
         slide_duration = min(6.0, audio_duration / len(image_files))
-        print(f"Adjusted slide duration to {slide_duration:.2f}s to better match audio")
+        print(f"Adjusted slide duration to {{slide_duration:.2f}}s to better match audio")
 
-print(f"Using slide duration: {slide_duration:.2f} seconds")
+print(f"Using slide duration: {{slide_duration:.2f}} seconds")
 
 # Create temporary file list
 with open("temp/filelist.txt", "w") as f:
     for img in image_files:
         # Check if this is a full path or just a filename
-        if os.path.dirname(img):
-            f.write(f"file '{img}'\n")
+        if os.path.isabs(img) or os.path.dirname(img):
+            # Use absolute path or path relative to current directory
+            absolute_path = os.path.abspath(img)
+            f.write(f"file '{{absolute_path}}'\\n")
         else:
-            f.write(f"file '../{IMAGE_DIR}/{img}'\n")
-        f.write(f"duration {slide_duration}\n")
+            # Just a filename, use IMAGE_DIR
+            f.write(f"file '{{os.path.abspath(os.path.join(\"images/original\", img))}}'\\n")
+        f.write(f"duration {{slide_duration}}\\n")
     
     # Add last image again to avoid premature ending
     if image_files:
         last_img = image_files[-1]
-        if os.path.dirname(last_img):
-            f.write(f"file '{last_img}'\n")
+        if os.path.isabs(last_img) or os.path.dirname(last_img):
+            # Use absolute path or path relative to current directory
+            absolute_path = os.path.abspath(last_img)
+            f.write(f"file '{{absolute_path}}'\\n")
         else:
-            f.write(f"file '../{IMAGE_DIR}/{last_img}'\n")
+            # Just a filename, use IMAGE_DIR
+            f.write(f"file '{{os.path.abspath(os.path.join(\"images/original\", last_img))}}'\\n")
 
 # Parse resolution
 width, height = map(int, RESOLUTION.split('x'))
 
 # Determine quality settings based on encoder
-crf_value = "23"  # Default for H.264
+crf_value = "30"  # Higher CRF = lower quality but faster encoding
 if ENCODER == "libx265":
-    crf_value = "28"  # HEVC uses different CRF scale
+    crf_value = "35"  # HEVC uses different CRF scale - much higher for speed
 elif "av1" in ENCODER:
-    crf_value = "30"  # AV1 uses different CRF scale
+    crf_value = "40"  # AV1 uses different CRF scale - much higher for speed
 
-# Add fade transitions between slides
-transitions_enabled = True
-
-# Build FFmpeg command with advanced options
+# Build FFmpeg command with maximum speed optimizations
 ffmpeg_cmd = [
     "ffmpeg", "-y",
     "-f", "concat", "-safe", "0", "-i", "temp/filelist.txt",
@@ -852,43 +1272,73 @@ ffmpeg_cmd = [
 if AUDIO_FILE:
     ffmpeg_cmd.extend(["-i", AUDIO_FILE])
 
-# Add video settings
+# Add video settings optimized for speed
 ffmpeg_cmd.extend([
     "-c:v", ENCODER,
     "-preset", QUALITY_PRESET,
     "-crf", crf_value,
     "-pix_fmt", "yuv420p",
+    "-g", "999999",           # Reduce keyframes to bare minimum
+    "-keyint_min", "999999",  # Minimize keyframes for speed
+    "-sc_threshold", "0",     # Disable scene change detection for speed
+    "-tune", "fastdecode",    # Optimize for decode speed
 ])
 
-# Add audio settings if available
+# Additional encoder-specific optimizations for speed
+if "videotoolbox" in ENCODER:
+    # Apple VideoToolbox specific optimizations for speed
+    ffmpeg_cmd.extend([
+        "-allow_sw", "1",       # Allow software fallback
+        "-realtime", "1",       # Prioritize realtime encoding
+        "-b:v", "1M",           # Use fixed bitrate mode for speed
+        "-maxrate", "1M",       # Limit max bitrate
+        "-bufsize", "1M",       # Small buffer for speed
+    ])
+elif "nvenc" in ENCODER:
+    # NVIDIA NVENC specific optimizations for speed
+    ffmpeg_cmd.extend([
+        "-preset", "p1",         # Fastest preset for NVENC
+        "-tune", "ll",           # Low latency tuning
+        "-rc", "constqp",        # Constant QP mode for speed
+        "-qp", "32",             # Higher QP = faster encoding
+        "-b:v", "0",             # Disable bitrate control
+    ])
+elif "qsv" in ENCODER:
+    # Intel QuickSync specific optimizations
+    ffmpeg_cmd.extend([
+        "-low_power", "1",      # Use low power mode for speed
+        "-async_depth", "1",    # Minimize frame queue
+    ])
+else:
+    # Software encoder optimizations
+    ffmpeg_cmd.extend([
+        "-threads", "0",         # Use all available threads
+        "-slices", "4",          # Slice frames for parallel encoding
+        "-flags", "+cgop",       # Closed GOP for faster encoding
+        "-movflags", "+faststart", # Optimize for streaming
+        "-bf", "0",              # No B-frames for speed
+        "-refs", "1",            # Minimal reference frames
+    ])
+
+# Add fast audio encoding settings if available
 if AUDIO_FILE:
     ffmpeg_cmd.extend([
         "-c:a", "aac",
-        "-b:a", "192k",
-        "-shortest",
+        "-b:a", "128k",         # Lower audio bitrate for speed
+        "-ar", "44100",         # Lower sample rate for speed
     ])
 
-# Enable fade transitions if requested
-if transitions_enabled:
-    ffmpeg_cmd.extend([
-        "-vf", "fade=t=in:st=0:d=0.5,fade=t=out:st={:.1f}:d=0.5".format(
-            slide_duration * len(image_files) - 0.5
-        )
-    ])
-
-# Add resolution and other settings
+# Optimize filter settings for speed
 ffmpeg_cmd.extend([
-    "-s", RESOLUTION,
-    "-r", "30",
-    "-movflags", "+faststart",
-    OUTPUT_FILENAME
+    "-vf", f"scale={{RESOLUTION}}:flags=fast_bilinear",  # Fast scaling algorithm
+    "output/" + OUTPUT_FILENAME
 ])
 
 # Save metadata about the encoding
-metadata = {
+metadata = {{
     "title": TITLE,
     "created": datetime.now().isoformat(),
-    "settings": {
+    "settings": {{
         "resolution": RESOLUTION,
         "quality": QUALITY_PRESET,
         "encoder": ENCODER,
@@ -896,81 +1346,205 @@ metadata = {
         "total_duration": slide_duration * len(image_files),
         "image_count": len(image_files),
         "audio": AUDIO_FILE is not None
-    }
-}
+    }}
+}}
 
 with open("temp/encode_metadata.json", "w") as f:
     json.dump(metadata, f, indent=2)
 
 # Log the command
-print(f"Running FFmpeg command: {' '.join(ffmpeg_cmd)}")
+print(f"Running FFmpeg command: {{' '.join(ffmpeg_cmd)}}")
 
-# Create log file
-log_file = "logs/ffmpeg_output.log"
-log_file_handle = open(log_file, "w")
-
-# Record start time
-start_time = time.time()
+# Create log file - IMPORTANT: This must match the path expected by monitor_encoding.py
+log_file = "temp/ffmpeg_output.log"
 
 # Run FFmpeg
 try:
-    process = subprocess.Popen(ffmpeg_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, 
-                               universal_newlines=True, bufsize=1)
+    # First, create a subprocess that runs FFmpeg and redirects output to a log file
+    print(f"Starting encoding process...")
+    print(f"For detailed progress, you can view the log file: {{log_file}}")
     
-    # Process output in real-time
-    for line in process.stdout:
-        sys.stdout.write(line)
-        log_file_handle.write(line)
-        log_file_handle.flush()
+    # Open log file for FFmpeg output
+    log_file_handle = open(log_file, "w")
     
-    # Wait for process to complete
+    # Start the FFmpeg process
+    process = subprocess.Popen(
+        ffmpeg_cmd, 
+        stdout=log_file_handle, 
+        stderr=subprocess.STDOUT, 
+        universal_newlines=True
+    )
+    
+    # Record start time
+    start_time = time.time()
+    
+    # Write the PID to a file for the monitor to pick up
+    with open("temp/ffmpeg_pid.txt", "w") as f:
+        f.write(str(process.pid))
+    
+    # Wait for the process to complete
     process.wait()
+    returncode = process.returncode
     
-    # Check result
-    if process.returncode == 0:
-        elapsed_time = time.time() - start_time
-        print(f"\\nEncoding completed successfully in {elapsed_time:.2f} seconds")
-        print(f"Output file: {OUTPUT_FILENAME}")
+    # Calculate elapsed time
+    elapsed_time = time.time() - start_time
+    
+    # Close log file
+    log_file_handle.close()
+    
+    # Final output based on success or failure
+    if returncode == 0:
+        print(f"\\n\\033[38;5;35m✓\\033[0m \\033[1mEncoding completed successfully\\033[0m in {{elapsed_time:.2f}} seconds")
+        print(f"Output: output/{{OUTPUT_FILENAME}}")
         
         # Show file size
         try:
-            file_size = os.path.getsize(OUTPUT_FILENAME)
-            print(f"File size: {file_size / (1024*1024):.2f} MB")
+            file_size = os.path.getsize("output/" + OUTPUT_FILENAME)
+            print(f"File size: {{file_size / (1024*1024):.2f}} MB")
         except:
             pass
     else:
-        print(f"\\nEncoding failed with error code {process.returncode}")
-        print(f"Check log file for details: {log_file}")
+        print(f"\\n\\033[38;5;196m✗\\033[0m \\033[1mEncoding failed\\033[0m with code {{returncode}}")
+        print(f"Check log file for details: {{log_file}}")
 except Exception as e:
-    print(f"Error running FFmpeg: {e}")
-finally:
-    log_file_handle.close()
+    print(f"Error running FFmpeg: {{e}}")
+    if 'log_file_handle' in locals() and not log_file_handle.closed:
+        log_file_handle.close()
 """
-    
+
+    # Write the script to the run_encode.py file
+    script_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "run_encode.py")
     with open(script_path, "w") as f:
         f.write(script_content)
     
     # Make the script executable
-    os.chmod(script_path, 0o755)
+    try:
+        os.chmod(script_path, 0o755)
+    except Exception:
+        pass
+    
+    # Save the metadata for reference
+    metadata = {
+        "title": slideshow_title,
+        "resolution": resolution,
+        "quality": quality,
+        "output": output_filename,
+        "encoder": encoder,
+        "audio": os.path.basename(audio_file) if audio_file else None,
+        "images": len(image_list),
+        "slide_duration": slide_duration,
+        "timestamp": datetime.now().isoformat()
+    }
+    
+    os.makedirs("temp", exist_ok=True)
+    with open("temp/slideshow_config.json", "w") as f:
+        json.dump(metadata, f, indent=2)
+    
+    return script_path
 
 def run_encoding():
-    """Run the encoding script"""
+    """Run the encoding script with progress monitoring, optimized for maximum speed"""
     script_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "run_encode.py")
+    monitor_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "monitor_encoding.py")
     
-    if not os.path.exists(script_path):
-        print_styled(RED, "Error: Encoding script not found")
-        return
+    # Make sure temp directory exists
+    os.makedirs("temp", exist_ok=True)
     
-    # Run the script
+    # Define the log file path - must be consistent with what's in run_encode.py
+    log_file = "temp/ffmpeg_output.log"
+    
+    print_styled(BLUE, "▶ Starting encoding with MAXIMUM SPEED OPTIMIZATION")
+    print_styled(GRAY, "  Using ultrafast preset and hardware acceleration when available")
+    print_styled(GRAY, "  Quality is reduced to achieve the fastest possible encoding speed")
+    
     try:
-        subprocess.run([sys.executable, script_path], check=True)
+        # Set high process priority if possible
+        high_priority_cmd = []
+        if platform.system() == "Windows":
+            # On Windows, use start command with high priority
+            high_priority_cmd = ["start", "/HIGH", "/B", sys.executable, script_path]
+        elif platform.system() == "Darwin":  # macOS
+            # On Mac, use nice command with low value (higher priority)
+            high_priority_cmd = ["nice", "-n", "-10", sys.executable, script_path]
+        elif platform.system() == "Linux":
+            # On Linux, use nice command with low value (higher priority)
+            high_priority_cmd = ["nice", "-n", "-10", sys.executable, script_path]
+        
+        # Use high priority if we could set it up, otherwise use normal priority
+        if high_priority_cmd:
+            print_styled(GRAY, "  Running with high CPU priority for maximum performance")
+            try:
+                # For Mac/Linux, may require sudo, catch permission errors
+                encoding_process = subprocess.Popen(
+                    high_priority_cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    universal_newlines=True,
+                    bufsize=1
+                )
+            except (PermissionError, subprocess.SubprocessError):
+                # Fall back to normal priority
+                print_styled(YELLOW, "  Could not set high priority (permission denied), using normal priority")
+                encoding_process = subprocess.Popen(
+                    [sys.executable, script_path],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    universal_newlines=True,
+                    bufsize=1
+                )
+        else:
+            # Use normal priority
+            encoding_process = subprocess.Popen(
+                [sys.executable, script_path],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                universal_newlines=True,
+                bufsize=1
+            )
+            
+        # Wait a moment for the process to start
+        time.sleep(1)
+        
+        # Check if the process is still running
+        if encoding_process.poll() is not None:
+            print_styled(RED, "Encoding process failed to start or exited immediately")
+            return False
+        
+        # Start monitoring
+        try:
+            # Build command with specific log file parameter
+            monitor_cmd = [
+                sys.executable, 
+                monitor_path,
+                "--log-file", log_file,
+                "--ffmpeg-pid", str(encoding_process.pid)
+            ]
+            
+            print_styled(GRAY, f"Starting monitoring with PID {encoding_process.pid}")
+            
+            # Run the monitor with all necessary parameters
+            subprocess.run(monitor_cmd, check=True)
+        except subprocess.SubprocessError:
+            # Monitor might have been interrupted, but encoding continues
+            pass
+        except KeyboardInterrupt:
+            print_styled(YELLOW, "Monitor stopped. Encoding continues in background.")
+        
+        # Wait for encoding to complete
+        encoding_process.wait()
+        
+        if encoding_process.returncode == 0:
+            print()
+            print_styled(GREEN, "Encoding completed successfully")
+            return True
+        else:
+            print()
+            print_styled(RED, f"Encoding failed with code {encoding_process.returncode}")
+            return False
+    except Exception as e:
         print()
-        print_styled(GREEN, "Encoding completed successfully")
-    except subprocess.SubprocessError:
-        print()
-        print_styled(RED, "Encoding failed")
-    
-    input("\nPress Enter to return to the main menu...")
+        print_styled(RED, f"Error running encoding: {e}")
+        return False
 
 def show_help():
     """Show help information"""
@@ -1008,7 +1582,7 @@ def show_help():
     input("\nPress Enter to return to the main menu...")
 
 def show_main_menu():
-    """Show the main menu and handle user input"""
+    """Show the main menu with responsive layout"""
     while True:
         show_banner()
         
@@ -1027,38 +1601,111 @@ def show_main_menu():
         # Determine if we can offer a quick start option
         quick_start_ready = images_ready
         
-        print_styled(BOLD, "Select an option:")
-        print()
+        # Get terminal width for responsive content
+        width = shutil.get_terminal_size().columns
+        # Calculate responsive menu width - adapt to terminal size
+        menu_width = min(75, max(40, width - 10))
         
-        if quick_start_ready:
-            print_styled(BOLD + GREEN, "✓ Media Ready: " + 
-                        f"{image_count} images" + 
-                        (f", {audio_count} audio files" if audio_count > 0 else ""))
-            print()
-            print_styled(GREEN, "1. Quick Create Slideshow (Auto Settings)")
-            print_styled(CYAN, "2. Interactive Mode (Guided Settings)")
-            print_styled(YELLOW, "3. Batch Processing")
-            print_styled(PURPLE, "4. Media Management")
-            print_styled(BLUE, "5. Hardware Analysis")
-            print_styled(GRAY, "6. Help & Documentation")
-            print_styled(LIGHT_GRAY, "7. Exit")
+        # Display elegant menu header
+        if USE_COLORS:
+            header = " Menu Options "
+            padding = (menu_width - len(header)) // 2
+            if USE_UNICODE:
+                print(f"{' ' * padding}{BOLD}{BLUE}•{header}•{RESET}")
+                print(f"{GRAY}{'─' * menu_width}{RESET}")
+            else:
+                print(f"{' ' * padding}{BOLD}{BLUE}{header}{RESET}")
+                print(f"{GRAY}{'-' * menu_width}{RESET}")
         else:
-            print_styled(YELLOW, "⚠️ No images found in images/original/ directory")
-            print()
-            print_styled(CYAN, "1. Interactive Mode (Guided Settings)")
-            print_styled(PURPLE, "2. Media Management")
-            print_styled(BLUE, "3. Hardware Analysis")
-            print_styled(GRAY, "4. Help & Documentation")
-            print_styled(LIGHT_GRAY, "5. Exit")
+            print(f"Menu Options")
+            print("-" * menu_width)
+        
+        # Show media status in a cleaner box style
+        if USE_COLORS and USE_UNICODE:
+            if quick_start_ready:
+                status_text = f"Media Ready: {image_count} images" + (f", {audio_count} audio files" if audio_count > 0 else "")
+                print(f"\n{' ' * 4}{GREEN}✓{RESET} {BOLD}{status_text}{RESET}")
+            else:
+                print(f"\n{' ' * 4}{YELLOW}⚠{RESET} {BOLD}No images found in images/original/ directory{RESET}")
+        else:
+            if quick_start_ready:
+                print(f"\nMedia Ready: {image_count} images" + (f", {audio_count} audio files" if audio_count > 0 else ""))
+            else:
+                print(f"\nNo images found in images/original/ directory")
         
         print()
         
-        choice = ask_question("Enter your choice", default="1")
+        # Define menu items with icons and responsive design
+        if quick_start_ready:
+            menu_items = [
+                ("Quick Create Slideshow", "Auto-generate with optimized settings", GREEN, "1"),
+                ("Interactive Mode", "Customize your slideshow settings", CYAN, "2"),
+                ("Batch Processing", "Create multiple slideshows in sequence", YELLOW, "3"),
+                ("Media Management", "Import, organize, and manage media files", PURPLE, "4"),
+                ("Hardware Analysis", "Check system capabilities", BLUE, "5"),
+                ("Help & Documentation", "View usage instructions", GRAY, "6"),
+                ("Exit", "Quit SlideSonic", LIGHT_GRAY, "7")
+            ]
+        else:
+            menu_items = [
+                ("Interactive Mode", "Customize your slideshow settings", CYAN, "1"),
+                ("Media Management", "Import, organize, and manage media files", PURPLE, "2"),
+                ("Hardware Analysis", "Check system capabilities", BLUE, "3"),
+                ("Help & Documentation", "View usage instructions", GRAY, "4"),
+                ("Exit", "Quit SlideSonic", LIGHT_GRAY, "5")
+            ]
         
+        # Responsive menu display based on terminal width
+        for i, (title, description, color, key) in enumerate(menu_items):
+            if USE_COLORS:
+                icon = "•" if USE_UNICODE else "*"
+                
+                # Responsive layout based on terminal width
+                if width > 80:
+                    # Wide terminal - show everything on one line
+                    if USE_UNICODE:
+                        print(f"{' ' * 4}{color}{icon}{RESET} {BOLD}{title}{RESET} {GRAY}— {description}{RESET} {color}[{key}]{RESET}")
+                    else:
+                        print(f"{' ' * 4}{color}{icon}{RESET} {BOLD}{title}{RESET} {GRAY}- {description}{RESET} {color}[{key}]{RESET}")
+                elif width > 60:
+                    # Medium width - slightly compact
+                    if USE_UNICODE:
+                        print(f"{' ' * 2}{color}{icon}{RESET} {BOLD}{title}{RESET} {GRAY}— {description}{RESET} {color}[{key}]{RESET}")
+                    else:
+                        print(f"{' ' * 2}{color}{icon}{RESET} {BOLD}{title}{RESET} {GRAY}- {description}{RESET} {color}[{key}]{RESET}")
+                else:
+                    # Narrow terminal - stack title and description
+                    print(f"{' ' * 2}{color}{icon}{RESET} {BOLD}{title}{RESET} {color}[{key}]{RESET}")
+                    print(f"{' ' * 5}{GRAY}{description}{RESET}")
+            else:
+                print(f"  {i+1}. {title} - {description}")
+        
+        print()
+        
+        # Add a subtle prompt
+        if USE_COLORS:
+            prompt = "Enter your choice"
+            print(f"{' ' * 4}{BLUE}▶{RESET} {prompt} ", end="")
+        else:
+            prompt = "Enter your choice: "
+            print(prompt, end="")
+        
+        # Get user choice with timeout to enable responsive updates
+        try:
+            # Using a short timeout allows for more responsive UI updates if needed
+            choice = input()
+        except KeyboardInterrupt:
+            # Handle Ctrl+C gracefully
+            if USE_COLORS:
+                print(f"\n{GRAY}Exiting SlideSonic...{RESET}")
+            else:
+                print("\nExiting SlideSonic...")
+            return
+        
+        # Process menu choice
         if quick_start_ready:
             # Menu with quick start option
             if choice == "1":
-                # Quick create with automatic settings
                 quick_create_slideshow()
             elif choice == "2":
                 create_slideshow_interactive()
@@ -1071,10 +1718,16 @@ def show_main_menu():
             elif choice == "6":
                 show_help()
             elif choice == "7":
-                print_styled(GRAY, "Exiting SlideSonic...")
+                if USE_COLORS:
+                    print(f"\n{GRAY}Exiting SlideSonic...{RESET}")
+                else:
+                    print("\nExiting SlideSonic...")
                 return
             else:
-                print_styled(RED, "Invalid choice. Please try again.")
+                if USE_COLORS:
+                    print(f"\n{RED}Invalid choice. Please try again.{RESET}")
+                else:
+                    print("\nInvalid choice. Please try again.")
                 time.sleep(1)
         else:
             # Menu without quick start option
@@ -1087,28 +1740,76 @@ def show_main_menu():
             elif choice == "4":
                 show_help()
             elif choice == "5":
-                print_styled(GRAY, "Exiting SlideSonic...")
+                if USE_COLORS:
+                    print(f"\n{GRAY}Exiting SlideSonic...{RESET}")
+                else:
+                    print("\nExiting SlideSonic...")
                 return
             else:
-                print_styled(RED, "Invalid choice. Please try again.")
+                if USE_COLORS:
+                    print(f"\n{RED}Invalid choice. Please try again.{RESET}")
+                else:
+                    print("\nInvalid choice. Please try again.")
                 time.sleep(1)
 
 def media_management_menu():
-    """Menu for media management options"""
+    """Media management options with Apple-inspired design aesthetics"""
     while True:
         show_banner()
         
-        print_styled(BOLD, "Media Management")
-        print()
-        print_styled(GREEN, "1. Import Images from Directory")
-        print_styled(CYAN, "2. Import Audio from Directory")
-        print_styled(YELLOW, "3. Create Test Images")
-        print_styled(PURPLE, "4. Organize Existing Images")
-        print_styled(BLUE, "5. View Media Information")
-        print_styled(GRAY, "6. Return to Main Menu")
+        # Get terminal width for centered content
+        width = shutil.get_terminal_size().columns
+        menu_width = min(60, width - 10)  # Keep menu width reasonable
+        
+        # Display elegant menu header
+        if USE_COLORS:
+            header = " Media Management "
+            padding = (menu_width - len(header)) // 2
+            if USE_UNICODE:
+                print(f"{' ' * padding}{BOLD}{PURPLE}•{header}•{RESET}")
+                print(f"{GRAY}{'─' * menu_width}{RESET}")
+            else:
+                print(f"{' ' * padding}{BOLD}{PURPLE}{header}{RESET}")
+                print(f"{GRAY}{'-' * menu_width}{RESET}")
+        else:
+            print("Media Management")
+            print("-" * menu_width)
+        
         print()
         
-        choice = ask_question("Enter your choice", default="1")
+        # Define menu items with Apple-style icons
+        menu_items = [
+            ("Import Images", "Copy images from another directory", GREEN, "1"),
+            ("Import Audio", "Copy audio from another directory", CYAN, "2"),
+            ("Create Test Images", "Generate sample images", YELLOW, "3"),
+            ("Organize Images", "Sort images into logical groups", PURPLE, "4"),
+            ("View Media Information", "Show details about available media", BLUE, "5"),
+            ("Return to Main Menu", "Go back to main options", GRAY, "6")
+        ]
+        
+        # Display menu items in a cleaner, more modern style
+        for i, (title, description, color, key) in enumerate(menu_items):
+            if USE_COLORS:
+                icon = "•" if USE_UNICODE else "*"
+                if USE_UNICODE:
+                    print(f"{' ' * 4}{color}{icon}{RESET} {BOLD}{title}{RESET} {GRAY}— {description}{RESET} {color}[{key}]{RESET}")
+                else:
+                    print(f"{' ' * 4}{color}{icon}{RESET} {BOLD}{title}{RESET} {GRAY}- {description}{RESET} {color}[{key}]{RESET}")
+            else:
+                print(f"  {i+1}. {title} - {description}")
+        
+        print()
+        
+        # Add a subtle prompt
+        if USE_COLORS:
+            prompt = "Enter your choice"
+            print(f"{' ' * 4}{BLUE}▶{RESET} {prompt} ", end="")
+        else:
+            prompt = "Enter your choice: "
+            print(prompt, end="")
+        
+        # Get user choice
+        choice = input()
         
         if choice == "1":
             import_images()
@@ -1124,109 +1825,305 @@ def media_management_menu():
         elif choice == "6":
             return
         else:
-            print_styled(RED, "Invalid choice. Please try again.")
+            if USE_COLORS:
+                print(f"\n{RED}Invalid choice. Please try again.{RESET}")
+            else:
+                print("\nInvalid choice. Please try again.")
             time.sleep(1)
 
 def quick_create_slideshow():
-    """Create a slideshow with fully automatic settings"""
+    """Quick creation of a slideshow with Apple-inspired design aesthetics"""
     show_banner()
     
-    # Load settings
-    settings = load_settings()
+    # Get terminal width for centered content
+    width = shutil.get_terminal_size().columns
+    menu_width = min(80, width - 10)
+    
+    # Display section header
+    if USE_COLORS:
+        section_title = " Quick Slideshow "
+        padding = (menu_width - len(section_title)) // 2
+        if USE_UNICODE:
+            print(f"{' ' * padding}{BOLD}{BLUE}•{section_title}•{RESET}")
+            print(f"{GRAY}{'─' * menu_width}{RESET}")
+        else:
+            print(f"{' ' * padding}{BOLD}{BLUE}{section_title}{RESET}")
+            print(f"{GRAY}{'-' * menu_width}{RESET}")
+    else:
+        print("Quick Slideshow")
+        print("-" * menu_width)
+    
+    print()
     
     # Show a spinner while scanning
-    show_spinner("Analyzing media files", 1)
+    show_spinner("Scanning for media files", 1)
     
     # Auto-organize images and find matching audio
-    media_data = auto_organize_images()
+    if USE_COLORS:
+        print(f"{BOLD}Analyzing media files...{RESET}")
+    else:
+        print("Analyzing media files...")
+    
+    media_data = auto_organize_images(recursive=True)
     
     # Check if we found any images
     if media_data["images"]["count"] == 0:
-        print_styled(RED, "Error: No images found in images/original/ directory")
-        print_styled(GRAY, "Please add your images to the images/original/ directory and try again.")
-        input("\nPress Enter to return to the main menu...")
-        return
+        if USE_COLORS:
+            print(f"\n{RED}⚠ No images found{RESET}")
+            print(f"{GRAY}Please add images to the images/original/ directory first.{RESET}")
+        else:
+            print("\nError: No images found")
+            print("Please add images to the images/original/ directory first.")
+        
+        create_test = ask_question("Would you like to create test images for a demo", default="y", options=["y", "n"]) == "y"
+        if create_test:
+            create_test_images()
+            media_data = auto_organize_images()  # Rescan after creating test images
+            if media_data["images"]["count"] == 0:
+                if USE_COLORS:
+                    print(f"\n{RED}Failed to create test images.{RESET}")
+                else:
+                    print("\nFailed to create test images.")
+                input("\nPress Enter to return to the main menu...")
+                return
+        else:
+            input("\nPress Enter to return to the main menu...")
+            return
     
-    # Smart project name suggestion
+    # Display status info in an elegant box
+    if USE_COLORS:
+        status_box_top = f"{LIGHT_GRAY}┌{'─' * (menu_width - 2)}┐{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        status_box_bottom = f"{LIGHT_GRAY}└{'─' * (menu_width - 2)}┘{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        status_side = f"{LIGHT_GRAY}│{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}|{RESET}"
+        divider = f"{LIGHT_GRAY}├{'─' * (menu_width - 2)}┤{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        
+        print("\n" + status_box_top)
+        print(f"{status_side} {BOLD}Media Analysis{RESET}{' ' * (menu_width - 15)}{status_side}")
+        print(divider)
+        
+        check = f"{GREEN}✓{RESET}" if USE_UNICODE else f"{GREEN}√{RESET}"
+        print(f"{status_side} {check} Found {media_data['images']['count']} images{' ' * (menu_width - 16 - len(str(media_data['images']['count'])))} {status_side}")
+        
+        if media_data["audio"]["selected"]:
+            audio_file = media_data["audio"]["selected"]
+            audio_name = os.path.basename(audio_file)
+            # Truncate long filenames
+            if len(audio_name) > menu_width - 24:
+                audio_name = audio_name[:menu_width-27] + "..."
+            print(f"{status_side} {check} Found audio: {audio_name}{' ' * (menu_width - 15 - len(audio_name))} {status_side}")
+            
+            if media_data["audio"]["duration"]:
+                mins, secs = divmod(media_data["audio"]["duration"], 60)
+                duration_str = f"{int(mins)}:{int(secs):02d}"
+                print(f"{status_side} {check} Audio duration: {duration_str}{' ' * (menu_width - 18 - len(duration_str))} {status_side}")
+        else:
+            print(f"{status_side} {YELLOW}⚠ No audio selected{RESET}{' ' * (menu_width - 19)} {status_side}")
+        
+        print(status_box_bottom)
+    else:
+        print(f"\nMedia Analysis:")
+        print(f"-" * menu_width)
+        print(f"✓ Found {media_data['images']['count']} images")
+        
+        if media_data["audio"]["selected"]:
+            audio_file = media_data["audio"]["selected"]
+            print(f"✓ Found audio: {os.path.basename(audio_file)}")
+            
+            if media_data["audio"]["duration"]:
+                mins, secs = divmod(media_data["audio"]["duration"], 60)
+                print(f"✓ Audio duration: {int(mins)}:{int(secs):02d}")
+        else:
+            print("⚠ No audio selected")
+        print(f"-" * menu_width)
+    
+    # Smart title suggestion
     suggested_name = ""
     
-    # Try to derive a name from common prefixes
-    prefix_groups = media_data["images"]["groups"]["prefix"]
-    if prefix_groups:
-        largest_prefix_group = max(prefix_groups.values(), key=len)
+    # Try to derive a name from common prefixes or dates
+    if media_data["images"]["groups"]["prefix"]:
+        # Find the largest prefix group
+        largest_prefix_group = max(media_data["images"]["groups"]["prefix"].values(), key=len)
         if len(largest_prefix_group) > 1:
-            suggested_name = largest_prefix_group[0]["prefix"].replace("_", " ").replace("-", " ").title()
+            suggested_name = largest_prefix_group[0]["prefix"].title()
     
-    # If no good prefix, try date-based name
     if not suggested_name and media_data["images"]["groups"]["date"]:
-        # Use the most common date
-        date_groups = media_data["images"]["groups"]["date"]
-        most_common_date = max(date_groups.values(), key=len)[0]["date"]
-        suggested_name = f"Slideshow {most_common_date}"
+        # Find the most common date
+        largest_date_group = max(media_data["images"]["groups"]["date"].values(), key=len)
+        if largest_date_group:
+            date_str = largest_date_group[0]["date"]
+            suggested_name = f"Slideshow {date_str}"
     
     # Default fallback
     if not suggested_name:
         suggested_name = f"Slideshow {datetime.now().strftime('%Y-%m-%d')}"
     
-    # Auto settings
+    # We'll try to keep the UI minimal for quick mode
+    print()
+    title = ask_question("Enter slideshow title", default=suggested_name)
+    
+    # Smart output filename
+    sanitized_title = re.sub(r'[^a-zA-Z0-9_-]', '_', title)
+    default_filename = f"{sanitized_title}_{datetime.now().strftime('%Y%m%d')}.mp4"
+    
+    # Quality detection based on hardware
     hw_info = get_hardware_info()
     
-    # Set resolution based on hardware
-    if hw_info.get("apple_silicon") or (HAVE_PSUTIL and psutil.cpu_count(logical=False) >= 8):
-        resolution = "1920x1080"  # 1080p for good hardware
+    if USE_COLORS:
+        # Create summary box
+        summary_title = " Slideshow Configuration "
+        padding = (menu_width - len(summary_title)) // 2
+        if USE_UNICODE:
+            print(f"\n{' ' * padding}{BOLD}{GREEN}•{summary_title}•{RESET}")
+            print(f"{GRAY}{'─' * menu_width}{RESET}")
+        else:
+            print(f"\n{' ' * padding}{BOLD}{GREEN}{summary_title}{RESET}")
+            print(f"{GRAY}{'-' * menu_width}{RESET}")
+        
+        summary_box_top = f"{LIGHT_GRAY}┌{'─' * (menu_width - 2)}┐{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        summary_box_bottom = f"{LIGHT_GRAY}└{'─' * (menu_width - 2)}┘{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}+{'-' * (menu_width - 2)}+{RESET}"
+        summary_side = f"{LIGHT_GRAY}│{RESET}" if USE_UNICODE else f"{LIGHT_GRAY}|{RESET}"
+        
+        # Calculate optimal settings
+        resolution = "1920x1080"  # Default to 1080p
+        if media_data["images"]["count"] > 50:
+            resolution = "3840x2160"  # Use 4K for larger sets
+        
+        # Auto-detect encoder
+        encoder = detect_best_encoder()
+        
+        # Choose quality based on hardware
+        if hw_info.get("apple_silicon") or (hw_info.get("cpu_cores", 4) >= 8):
+            quality = "slow"  # Better quality for good hardware
+        else:
+            quality = "medium"  # Default quality
+        
+        # Auto-select slide duration
+        slide_duration = 3.0  # Default duration
+        if media_data["audio"]["duration"] and media_data["images"]["count"] > 0:
+            raw_duration = media_data["audio"]["duration"] / media_data["images"]["count"]
+            slide_duration = max(2.0, min(6.0, raw_duration))
+        
+        # Function to create summary row
+        def summary_row(label, value, extra=""):
+            label = f"{BOLD}{label}:{RESET}"
+            padding = menu_width - len(label) - len(value) - len(extra) - 5
+            if extra:
+                return f"{summary_side} {label} {CYAN}{value}{RESET} {GRAY}{extra}{RESET}{' ' * padding} {summary_side}"
+            else:
+                return f"{summary_side} {label} {CYAN}{value}{RESET}{' ' * padding} {summary_side}"
+        
+        print(summary_box_top)
+        print(summary_row("Title", title))
+        print(summary_row("Resolution", resolution))
+        print(summary_row("Quality", quality))
+        print(summary_row("Output", default_filename))
+        
+        hw_text = "(hardware accelerated)" if "videotoolbox" in encoder or "nvenc" in encoder or "qsv" in encoder else ""
+        print(summary_row("Encoder", encoder, hw_text))
+        
+        if media_data["audio"]["selected"]:
+            print(summary_row("Audio", os.path.basename(media_data["audio"]["selected"])))
+        
+        print(summary_row("Images", str(media_data["images"]["count"])))
+        print(summary_row("Per slide", f"{slide_duration:.2f} seconds"))
+        print(summary_box_bottom)
     else:
-        resolution = "1280x720"   # 720p for lower-end hardware
+        # Calculate optimal settings
+        resolution = "1920x1080"  # Default to 1080p
+        if media_data["images"]["count"] > 50:
+            resolution = "3840x2160"  # Use 4K for larger sets
+        
+        # Auto-detect encoder
+        encoder = detect_best_encoder()
+        
+        # Choose quality based on hardware
+        if hw_info.get("apple_silicon") or (hw_info.get("cpu_cores", 4) >= 8):
+            quality = "slow"  # Better quality for good hardware
+        else:
+            quality = "medium"  # Default quality
+        
+        # Auto-select slide duration
+        slide_duration = 3.0  # Default duration
+        if media_data["audio"]["duration"] and media_data["images"]["count"] > 0:
+            raw_duration = media_data["audio"]["duration"] / media_data["images"]["count"]
+            slide_duration = max(2.0, min(6.0, raw_duration))
+        
+        print("\nSlideshow Configuration:")
+        print("-" * menu_width)
+        print(f"Title:      {title}")
+        print(f"Resolution: {resolution}")
+        print(f"Quality:    {quality}")
+        print(f"Output:     {default_filename}")
+        print(f"Encoder:    {encoder}{' (hardware accelerated)' if 'videotoolbox' in encoder or 'nvenc' in encoder or 'qsv' in encoder else ''}")
+        
+        if media_data["audio"]["selected"]:
+            print(f"Audio:      {os.path.basename(media_data['audio']['selected'])}")
+        
+        print(f"Images:     {media_data['images']['count']}")
+        print(f"Per slide:  {slide_duration:.2f} seconds")
+        print("-" * menu_width)
     
-    # Set quality based on hardware
-    if hw_info.get("apple_silicon") or (HAVE_PSUTIL and psutil.cpu_count(logical=False) >= 8):
-        quality = "medium"      # Better quality for good hardware
+    print()
+    
+    # Confirm with styled button
+    if USE_COLORS and USE_UNICODE:
+        print(f"{' ' * 4}{GREEN}▶{RESET} Ready to begin")
+    
+    # Confirm
+    if ask_question("Create slideshow now", default="y", options=["y", "n"]) != "y":
+        if USE_COLORS:
+            print(f"\n{GRAY}Slideshow creation cancelled{RESET}")
+        else:
+            print("\nSlideshow creation cancelled")
+        input("\nPress Enter to return to the main menu...")
+        return
+    
+    # Create encoding script
+    if USE_COLORS:
+        print(f"\n{BLUE}▶{RESET} {BOLD}Creating slideshow...{RESET}")
     else:
-        quality = "faster"      # Faster preset for lower-end hardware
+        print("\nCreating slideshow...")
     
-    # Create output filename
-    sanitized_title = suggested_name.replace(' ', '_').replace('/', '_').replace('\\', '_')
-    output_filename = f"{sanitized_title}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp4"
+    # Calculate optimal settings if not already done
+    if not 'resolution' in locals():
+        resolution = "1920x1080"  # Default to 1080p
+        if media_data["images"]["count"] > 50:
+            resolution = "3840x2160"  # Use 4K for larger sets
     
-    # Get best encoder
-    encoder = detect_best_encoder()
-    use_hardware_accel = "qsv" in encoder or "nvenc" in encoder or "videotoolbox" in encoder or "vaapi" in encoder
+    if not 'encoder' in locals():
+        encoder = detect_best_encoder()
     
-    # Show summary
-    print()
-    print_styled(BOLD, "Creating Slideshow with Automatic Settings")
-    print()
-    print_styled(CYAN, f"Title:      {suggested_name}")
-    print_styled(CYAN, f"Resolution: {resolution}")
-    print_styled(CYAN, f"Quality:    {quality}")
-    print_styled(CYAN, f"Output:     {output_filename}")
-    print_styled(CYAN, f"Encoder:    {encoder}{' (hardware accelerated)' if use_hardware_accel else ''}")
+    if not 'quality' in locals():
+        quality = "medium"  # Default quality
+        if hw_info.get("apple_silicon") or (hw_info.get("cpu_cores", 4) >= 8):
+            quality = "slow"  # Better quality for good hardware
     
-    if media_data["audio"]["selected"]:
-        audio_file = media_data["audio"]["selected"]
-        print_styled(CYAN, f"Audio:      {os.path.basename(audio_file)}")
-        print_styled(CYAN, f"Duration:   {media_data['audio']['duration']:.2f} seconds")
-    else:
-        audio_file = None
-        print_styled(YELLOW, "No audio file selected")
+    if not 'slide_duration' in locals():
+        slide_duration = 3.0  # Default duration
+        if media_data["audio"]["duration"] and media_data["images"]["count"] > 0:
+            raw_duration = media_data["audio"]["duration"] / media_data["images"]["count"]
+            slide_duration = max(2.0, min(6.0, raw_duration))
     
-    print_styled(CYAN, f"Images:     {media_data['images']['count']} images")
-    print_styled(CYAN, f"Per slide:  {media_data['slide_duration']:.2f} seconds")
-    print()
+    # Save settings for future use
+    settings = load_settings()
+    settings["last_resolution"] = resolution
+    settings["last_quality"] = quality
+    settings["quick_mode"] = True
+    save_settings(settings)
     
     # Create encoding script
     create_encoding_script(
-        suggested_name, 
+        title, 
         resolution, 
         quality, 
-        output_filename, 
+        default_filename, 
         encoder, 
-        audio_file,
+        media_data["audio"]["selected"], 
         media_data["images"]["suggested_order"],
-        media_data["slide_duration"]
+        slide_duration
     )
     
-    # Immediate start
-    print_styled(GREEN, "Starting encoding process...")
+    # Run encoding
     run_encoding()
 
 def batch_process_slideshows():
@@ -1402,10 +2299,10 @@ def batch_process_slideshows():
         
         # Run encoding
         try:
-            subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.realpath(__file__)), "run_encode.py")], check=True)
+            run_encoding()
             print_styled(GREEN, f"✓ Successfully created slideshow: {output_filename}")
             success_count += 1
-        except subprocess.SubprocessError as e:
+        except Exception as e:
             print_styled(RED, f"✗ Failed to create slideshow for {dir_info['name']}: {e}")
     
     # Show summary
@@ -2168,6 +3065,72 @@ def main():
     
     # Show main menu
     show_main_menu()
+
+def create_test_images():
+    """Create sample test images for demo purposes"""
+    print_styled(CYAN, "Creating test images...")
+    
+    # Ensure directories exist
+    os.makedirs("images/original", exist_ok=True)
+    os.makedirs("song", exist_ok=True)
+    
+    # Create 10 test images with different colors
+    colors = [
+        (255, 0, 0), (0, 255, 0), (0, 0, 255),
+        (255, 255, 0), (255, 0, 255), (0, 255, 255),
+        (128, 0, 0), (0, 128, 0), (0, 0, 128),
+        (128, 128, 128)
+    ]
+    
+    # Try to get a font, fall back to default if not available
+    try:
+        # Try to use a system font that might be available
+        font_size = 40
+        if platform.system() == "Darwin":  # macOS
+            font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", font_size)
+        elif platform.system() == "Windows":
+            font = ImageFont.truetype("arial.ttf", font_size)
+        else:  # Linux
+            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size)
+    except Exception:
+        # Use default font if we can't load a system font
+        font = None
+    
+    # Create images
+    for i in range(1, 11):
+        img = Image.new('RGB', (800, 600), colors[i-1])
+        draw = ImageDraw.Draw(img)
+        
+        # Add text
+        text = f"Test Image {i}"
+        
+        # If we have a font, use it
+        if font:
+            # Center the text
+            text_width = draw.textlength(text, font=font)
+            text_position = ((800 - text_width) // 2, 280)
+            draw.text(text_position, text, fill=(255, 255, 255), font=font)
+        else:
+            # Without a specific font, just draw centered text
+            text_position = (350, 280)
+            draw.text(text_position, text, fill=(255, 255, 255))
+        
+        # Save image
+        img_path = os.path.join("images/original", f"test{i}.jpg")
+        img.save(img_path)
+    
+    # Create a test audio file
+    try:
+        # Just create an empty file for demonstration
+        audio_path = os.path.join("song", "test_audio.mp3")
+        with open(audio_path, 'w') as f:
+            f.write("This is a placeholder for a real MP3 file.")
+        
+        print_styled(GREEN, f"✓ Created 10 test images and a placeholder audio file")
+        return True
+    except Exception as e:
+        print_styled(RED, f"Error creating test audio: {e}")
+        return False
 
 if __name__ == "__main__":
     try:
