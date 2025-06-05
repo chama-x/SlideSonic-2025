@@ -668,15 +668,9 @@ def display_progress(args):
                             status_line += " | "
                         
                         # Add progress percentage
-                        status_line += f"{progress_pct:.1f}% "
-                        
-                        # Simple text-based progress indicator
-                        width = 20  # Fixed width for progress indicator
-                        filled = int(width * progress_pct / 100)
-                        status_line += "["
-                        status_line += "#" * filled
-                        status_line += "-" * (width - filled)
-                        status_line += "]"
+                        # Use draw_progress_bar for a better visual
+                        progress_bar_str = draw_progress_bar(progress_pct, width=20) # Or a suitable width
+                        status_line += f"{progress_pct:.1f}% {progress_bar_str}"
                     else:
                         status_line += f"Time: {progress_info['time_str']} | Progress: --% "
                 else:
